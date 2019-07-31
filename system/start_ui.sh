@@ -16,5 +16,5 @@ docker run \
   --restart always \
   --network=streamtagger \
   -v "${PWD}/storage/media:/var/media" \
-  -e ST_DB_CONNECTIONSTRING="host=streamtagger_db port=26257 dbname=streamtagger user=root password=" \
+  -e ST_DB_CONNECTIONSTRING="host=streamtagger_db port=5432 user=postgres password=mysecretpassword" \
   -p 5000:5000 -d streamtagger/ui

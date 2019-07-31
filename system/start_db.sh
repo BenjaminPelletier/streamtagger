@@ -19,7 +19,6 @@ docker run \
   --name streamtagger_db \
   --restart always \
   --network=streamtagger \
-  -v ${PWD}/storage/db:/cockroach/cockroach-data \
-  -p 26257:26257 \
-  -p 8888:8080 -d cockroachdb/cockroach:v19.1.3 \
-  start --insecure
+  -e POSTGRES_PASSWORD=mysecretpassword \
+  -v ${PWD}/storage/db:/var/lib/postgresql/data \
+  -d postgres
