@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c6cf7454-fc9a-4657-8fb0-1aa81ed3f761" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/sql_console.sh" beforeDir="false" afterPath="$PROJECT_DIR$/system/db_adminer.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/start_db.sh" beforeDir="false" afterPath="$PROJECT_DIR$/system/start_db.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/start_ui.sh" beforeDir="false" afterPath="$PROJECT_DIR$/system/start_ui.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
