@@ -1,0 +1,79 @@
+.top_container {
+    width: 80%;
+    margin: auto;
+}
+
+td {
+    padding: 2px 2px;
+}
+
+.song_button {
+    width: 24px;
+    height: 24px;
+}
+
+.play_song_button {
+    background: url('../button_play.png');
+    background-size: cover;
+}
+
+.pause_song_button {
+    background: url('../button_pause.png');
+    background-size: cover;
+}
+
+.resume_song_button {
+    background: url('../button_resume.png');
+    background-size: cover;
+}
+
+.action_context {
+    width: 24px;
+    height: 24px;
+    background: url('../button_menu.png');
+    background-size: cover;
+    background-color: transparent;
+}
+
+#menubar {
+    width: 100%;
+    text-align: right;
+}
+
+#menubar > * {
+    vertical-align: top;
+    display: inline-block;
+    text-align: left;
+}
+
+#controls_container {
+    width: 100%;
+    text-align: center;
+}
+
+#controls_container > * {
+    display: inline-block;
+}
+
+#prev_song_button {
+    width: 48px;
+    height: 48px;
+    background: url('../button_prev.png');
+    background-size: cover;
+}
+
+#next_song_button {
+    width: 48px;
+    height: 48px;
+    background: url('../button_next.png');
+    background-size: cover;
+}
+
+#console {
+    width: 40%;
+    height: 20%;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    visibility: hidden;
+}

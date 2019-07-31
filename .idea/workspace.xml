@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="c6cf7454-fc9a-4657-8fb0-1aa81ed3f761" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/streamtagger.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/sql_console.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/start_db.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/start_ui.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/app/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/app/librarian.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/app/player.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/app/resources.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/app/sessions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/app/uploads.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/static/button_menu.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/static/button_next.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/static/button_pause.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/static/button_play.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/static/button_prev.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/static/button_resume.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/static/css/dropdown.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/static/css/jquery.dm-uploader.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/static/css/login.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/static/css/player.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/static/css/upload.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/static/favicon.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/static/js/dropdown.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/static/js/jquery.dm-uploader.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/static/js/login.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/static/js/player.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/static/js/sha1.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/static/js/upload.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/streamtagger.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/templates/login.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/templates/player.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/templates/song_table.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/templates/upload.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/test_database.py" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="65" />
+    <option name="y" value="-4" />
+    <option name="width" value="1855" />
+    <option name="height" value="1204" />
+  </component>
+  <component name="ProjectId" id="1OT6clyo21P8MI7SFPyoTTFi5br" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/ui/test_database.py" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/ui/static/upload" />
+      <recent name="$PROJECT_DIR$/ui/static" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/ui/templates" />
+      <recent name="$PROJECT_DIR$/ui/static/js" />
+      <recent name="$PROJECT_DIR$/ui/static/css" />
+      <recent name="$PROJECT_DIR$/ui/static" />
+      <recent name="$PROJECT_DIR$/ui/static/upload" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Python.streamtagger">
+    <configuration name="streamtagger" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="streamtagger" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="ST_DB_CONNECTIONSTRING" value="host=localhost port=26257 dbname=streamtagger user=root password=" />
+        <env name="ST_MEDIA_PATH" value="$USER_HOME$/Music" />
+        <env name="ST_BASE_URL" value="http://localhost:5000/media/" />
+      </envs>
+      <option name="SDK_HOME" value="$PROJECT_DIR$/venv/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/ui" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ui/streamtagger.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="test_database" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="streamtagger" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="DB_CONNECTIONSTRING" value="host=localhost port=26257 dbname=streamtagger user=root password=" />
+        <env name="MEDIA_PATH" value="$USER_HOME$/Music" />
+      </envs>
+      <option name="SDK_HOME" value="$PROJECT_DIR$/venv/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/ui" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ui/test_database.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.streamtagger" />
+      <item itemvalue="Python.test_database" />
+    </list>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c6cf7454-fc9a-4657-8fb0-1aa81ed3f761" name="Default Changelist" comment="" />
+      <created>1563513181040</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1563513181040</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/ui/app/librarian.py</url>
+          <line>5</line>
+          <option name="timeStamp" value="37" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

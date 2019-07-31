@@ -1,0 +1,32 @@
+<table id="songs">
+    <thead>
+        <tr>
+            <th></th>
+            <th></th>
+            {% for col in header %}
+            <th>{{ col }}</th>
+            {% endfor %}
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cols, song_id, song_path, i in zip(song_rows, song_ids, song_paths, range(len(song_rows))) %}
+        <tr data-path="{{ song_path }}" data-songid="{{ song_id }}">
+            <td>{{ i+1 }}</td>
+            <td><div class="song_button play_song_button" onclick="play_song(this)"></div></td>
+            {% for col in cols %}
+            <td>{{ col|safe }}</td>
+            {% endfor %}
+            <td>
+                <div class="dropdown">
+                  <div onclick="show_user_dropdown('action_{{ song_id }}')" class="actionbtn action_context"></div>
+                  <div id="action_{{ song_id }}" class="dropdown-content">
+                    <a href="#" onclick="tag_song(this)">Tag</a>
+                    <a href="#" onclick="delete_song(this)">Delete song</a>
+                  </div>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
