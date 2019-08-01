@@ -9,6 +9,8 @@ def init_db():
     if not users:
       r = random.Random()
       password =  ''.join(r.choice('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789') for i in range(10))
+      with open('admin.password', 'w') as f:
+        f.write(password)
       transaction.add_user('admin', password)
     else:
       password = None

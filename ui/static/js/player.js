@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    $( "#dialog-confirm-delete-song" ).hide();
+
     $('#songs').DataTable( {
       "paging": false,
       "searching": false,
@@ -8,7 +10,15 @@ $(document).ready(function() {
       },
       "columnDefs": [
         { "targets": 0, "searchable": false },
-        { "targets": 1, "orderable": false, "searchable": false }
+        { "targets": 1, "orderable": false, "searchable": false },
+        { "targets": 'date-column', render: function ( d, type, row ) {
+            if (type === 'sort' || type === 'type') {
+                return moment.utc(d).format('x');
+            } else {
+                return moment.utc(d).fromNow();
+            }
+	    }},
+	    { "targets": -1, orderable: false, searchable: false }
       ]
     } );
 

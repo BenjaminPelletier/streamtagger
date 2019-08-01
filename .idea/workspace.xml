@@ -2,15 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c6cf7454-fc9a-4657-8fb0-1aa81ed3f761" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/system/rebuild_ui.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ui/app/startup.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/static/js/datetime.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/static/js/moment.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/system/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/start_db.sh" beforeDir="false" afterPath="$PROJECT_DIR$/system/start_db.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/start_ui.sh" beforeDir="false" afterPath="$PROJECT_DIR$/system/start_ui.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/ui/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/app/lib/db.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/app/lib/db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/app/lib/dbinit.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/app/lib/dbinit.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/app/lib/song.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/app/lib/song.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/app/librarian.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/app/librarian.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/app/player.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/app/player.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/static/js/player.js" beforeDir="false" afterPath="$PROJECT_DIR$/ui/static/js/player.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/streamtagger.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/streamtagger.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/templates/player.html" beforeDir="false" afterPath="$PROJECT_DIR$/ui/templates/player.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/templates/song_table.html" beforeDir="false" afterPath="$PROJECT_DIR$/ui/templates/song_table.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -75,9 +80,8 @@
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
-        <env name="ST_DB_CONNECTIONSTRING" value="host=localhost port=26257 dbname=streamtagger user=root password=" />
-        <env name="ST_MEDIA_PATH" value="$USER_HOME$/Music" />
-        <env name="ST_BASE_URL" value="http://localhost:5000/media/" />
+        <env name="ST_DB_CONNECTIONSTRING" value="host=localhost port=5432 user=streamtagger password=mysecretpassword" />
+        <env name="ST_MEDIA_PATH" value="$PROJECT_DIR$/system/storage/media" />
       </envs>
       <option name="SDK_HOME" value="$PROJECT_DIR$/venv/bin/python" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/ui" />
@@ -144,16 +148,5 @@
         </entry>
       </map>
     </option>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/ui/app/librarian.py</url>
-          <line>5</line>
-          <option name="timeStamp" value="37" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

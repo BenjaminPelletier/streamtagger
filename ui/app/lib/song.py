@@ -1,3 +1,4 @@
+import datetime
 import os
 
 
@@ -20,3 +21,6 @@ class Song(object):
     if 'artist' in self.attributes:
       return self.attributes['artist']
     return ''
+
+  def get_added_at(self):
+    return self.added.isoformat()

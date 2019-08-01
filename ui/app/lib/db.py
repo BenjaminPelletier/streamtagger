@@ -53,7 +53,7 @@ class Transaction(object):
 
   def init_database(self):
     SQL_ENABLE_CRYPTO = """
-      CREATE EXTENSION "pgcrypto";
+      CREATE EXTENSION IF NOT EXISTS "pgcrypto";
     """
 
     SQL_CREATE_USERS_TABLE = """

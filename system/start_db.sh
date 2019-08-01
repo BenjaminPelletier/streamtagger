@@ -22,4 +22,5 @@ docker run \
   -e POSTGRES_USER=streamtagger \
   -e POSTGRES_PASSWORD=mysecretpassword \
   -v ${PWD}/storage/db:/var/lib/postgresql/data \
+  -p 5432:5432 \
   -d postgres

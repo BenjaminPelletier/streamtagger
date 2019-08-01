@@ -3,8 +3,8 @@
         <tr>
             <th></th>
             <th></th>
-            {% for col in header %}
-            <th>{{ col }}</th>
+            {% for col, classname in header %}
+            <th {% if classname %}class="{{ classname }}"{% endif %}>{{ col }}</th>
             {% endfor %}
             <th></th>
         </tr>

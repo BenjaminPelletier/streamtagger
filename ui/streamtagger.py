@@ -11,8 +11,8 @@ log = logging.getLogger('streamtagger')
 def main(argv):
   del argv
 
-  log.info('Starting webserver...', flush=True)
-  app.run(host='localhost', port=5000)
+  log.info('Starting webserver...')
+  app.run(host='0.0.0.0', port=5000)
 
 if __name__ == '__main__':
   main(sys.argv)
