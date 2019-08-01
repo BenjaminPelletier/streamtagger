@@ -4,9 +4,9 @@ FROM python:3.7-buster
 
 WORKDIR /usr/src/app
 
-RUN apt-get update
-RUN apt-get -y install libtag1-dev python3-dev
-RUN pip install flask gunicorn jinja2 psycopg2 pytaglib
+RUN apt-get update && \
+    apt-get -y install libtag1-dev python3-dev && \
+    pip install flask gunicorn jinja2 psycopg2 pytaglib
 
 COPY . .
 

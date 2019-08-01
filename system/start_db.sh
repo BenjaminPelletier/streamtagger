@@ -19,6 +19,7 @@ docker run \
   --name streamtagger_db \
   --restart always \
   --network=streamtagger \
+  -e POSTGRES_USER=streamtagger \
   -e POSTGRES_PASSWORD=mysecretpassword \
   -v ${PWD}/storage/db:/var/lib/postgresql/data \
   -d postgres

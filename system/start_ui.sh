@@ -6,8 +6,6 @@ if [[ $(docker container ls) == *"streamtagger_ui"* ]]; then
   docker container rm streamtagger_ui
 fi
 
-docker pull streamtagger/ui
-
 docker run \
   --log-driver json-file \
   --log-opt max-size=10m \
@@ -16,5 +14,6 @@ docker run \
   --restart always \
   --network=streamtagger \
   -v "${PWD}/storage/media:/var/media" \
-  -e ST_DB_CONNECTIONSTRING="host=streamtagger_db port=5432 user=postgres password=mysecretpassword" \
+  -e ST_DB_CONNECTIONSTRING="host=streamtagger_db port=5432 user=streamtagger password=mysecretpassword" \
+  -e PYTHONUNBUFFERED=TRUE \
   -p 5000:5000 -d streamtagger/ui

@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from app import player, resources, sessions, uploads
+from app import player, resources, sessions, uploads, startup
 from app.lib.flaskapp import app
 from app.lib import dbinit
 
@@ -11,9 +11,7 @@ log = logging.getLogger('streamtagger')
 def main(argv):
   del argv
 
-  dbinit.init_db()
-
-  log.info('Starting webserver...')
+  log.info('Starting webserver...', flush=True)
   app.run(host='localhost', port=5000)
 
 if __name__ == '__main__':

@@ -6,6 +6,7 @@ from . import sessions
 
 import flask
 
+print('player imported')
 def make_table(transaction, users):
   songs = transaction.query_songs('')
 
@@ -24,6 +25,7 @@ def make_table(transaction, users):
 
 @app.route('/', methods=['GET'])
 def index():
+  print('index requested', flush=True)
   with db.transaction() as transaction:
     user_id, session_id = sessions.get_session(transaction)
     if user_id is None:

@@ -41,23 +41,23 @@ class Transaction(object):
   def clear_database(self):
     SQL_CLEAR_DATABASE = """
       DROP TABLE IF EXISTS
-        streamtagger.attributes,
-        streamtagger.tags,
-        streamtagger.tag_definitions,
-        streamtagger.songs,
-        streamtagger.sessions,
-        streamtagger.users;
+        attributes,
+        tags,
+        tag_definitions,
+        songs,
+        sessions,
+        users;
     """
 
     self._cursor.execute(SQL_CLEAR_DATABASE)
 
   def init_database(self):
-    SQL_CREATE_DATABASE = """
-      CREATE DATABASE IF NOT EXISTS streamtagger;
+    SQL_ENABLE_CRYPTO = """
+      CREATE EXTENSION "pgcrypto";
     """
 
     SQL_CREATE_USERS_TABLE = """
-      CREATE TABLE IF NOT EXISTS streamtagger.users (
+      CREATE TABLE IF NOT EXISTS users (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         username VARCHAR NOT NULL UNIQUE,
         password_hash VARCHAR NOT NULL
@@ -65,9 +65,9 @@ class Transaction(object):
     """
 
     SQL_CREATE_SESSIONS_TABLE = """
-      CREATE TABLE IF NOT EXISTS streamtagger.sessions (
+      CREATE TABLE IF NOT EXISTS sessions (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        user_id UUID NOT NULL REFERENCES streamtagger.users (id) ON DELETE CASCADE,
+        user_id UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
         created_at TIMESTAMP NOT NULL,
         created_ip VARCHAR NOT NULL,
         last_used TIMESTAMP NOT NULL
@@ -75,28 +75,28 @@ class Transaction(object):
     """
 
     SQL_CREATE_SONGS_TABLE = """
-      CREATE TABLE IF NOT EXISTS streamtagger.songs (
+      CREATE TABLE IF NOT EXISTS songs (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         path VARCHAR NOT NULL UNIQUE,
         added TIMESTAMP NOT NULL,
-        added_with UUID REFERENCES streamtagger.sessions (id) ON DELETE RESTRICT
+        added_with UUID REFERENCES sessions (id) ON DELETE RESTRICT
       );
     """
 
     SQL_CREATE_TAG_DEFINITIONS_TABLE = """
-      CREATE TABLE IF NOT EXISTS streamtagger.tag_definitions (
+      CREATE TABLE IF NOT EXISTS tag_definitions (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         name VARCHAR NOT NULL UNIQUE,
-        created_by UUID REFERENCES streamtagger.users (id) ON DELETE RESTRICT,
+        created_by UUID REFERENCES users (id) ON DELETE RESTRICT,
         created_at TIMESTAMP NOT NULL
       );
     """
 
     SQL_CREATE_TAGS_TABLE = """
-      CREATE TABLE IF NOT EXISTS streamtagger.tags (
-        tag_id UUID NOT NULL REFERENCES streamtagger.tag_definitions (id) ON DELETE CASCADE,
-        song_id UUID NOT NULL REFERENCES streamtagger.songs (id) ON DELETE CASCADE,
-        user_id UUID NOT NULL REFERENCES streamtagger.users (id) ON DELETE CASCADE,
+      CREATE TABLE IF NOT EXISTS tags (
+        tag_id UUID NOT NULL REFERENCES tag_definitions (id) ON DELETE CASCADE,
+        song_id UUID NOT NULL REFERENCES songs (id) ON DELETE CASCADE,
+        user_id UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
         value INT NOT NULL,
         last_changed TIMESTAMP NOT NULL,
         PRIMARY KEY (tag_id, song_id, user_id)
@@ -104,15 +104,15 @@ class Transaction(object):
     """
 
     SQL_CREATE_ATTRIBUTES_TABLE = """
-      CREATE TABLE IF NOT EXISTS streamtagger.attributes (
-        song_id UUID NOT NULL REFERENCES streamtagger.songs (id) ON DELETE CASCADE,
+      CREATE TABLE IF NOT EXISTS attributes (
+        song_id UUID NOT NULL REFERENCES songs (id) ON DELETE CASCADE,
         name VARCHAR NOT NULL,
         value VARCHAR NOT NULL,
         PRIMARY KEY (song_id, name)
       );
     """
 
-    self._cursor.execute(SQL_CREATE_DATABASE)
+    self._cursor.execute(SQL_ENABLE_CRYPTO)
     self._cursor.execute(SQL_CREATE_USERS_TABLE)
     self._cursor.execute(SQL_CREATE_SESSIONS_TABLE)
     self._cursor.execute(SQL_CREATE_SONGS_TABLE)
@@ -122,7 +122,7 @@ class Transaction(object):
 
   def add_user(self, username, password):
     SQL_INSERT_USER = """
-      INSERT INTO streamtagger.users
+      INSERT INTO users
       (username, password_hash) VALUES (%s, %s)
       RETURNING id;
     """
@@ -136,7 +136,7 @@ class Transaction(object):
   def get_user(self, username):
     SQL_SELECT_USER_BY_USERNAME = """
       SELECT id, password_hash
-      FROM streamtagger.users
+      FROM users
       WHERE username=%s
     """
     self._cursor.execute(SQL_SELECT_USER_BY_USERNAME, [username])
@@ -149,14 +149,14 @@ class Transaction(object):
   def get_users(self):
     SQL_SELECT_USERS = """
       SELECT id, username
-      FROM streamtagger.users;
+      FROM users;
     """
     self._cursor.execute(SQL_SELECT_USERS)
     return {row[0]: row[1] for row in self._cursor.fetchall()}
 
   def add_session(self, user_id, ip):
     SQL_INSERT_SESSION = """
-      INSERT INTO streamtagger.sessions
+      INSERT INTO sessions
       (user_id, created_at, created_ip, last_used) VALUES (%s, %s, %s, %s)
       RETURNING id;
     """
@@ -169,7 +169,7 @@ class Transaction(object):
   def get_session(self, session_id):
     SQL_SELECT_SESSION = """
       SELECT user_id, last_used
-      FROM streamtagger.sessions
+      FROM sessions
       WHERE id=%s
     """
     self._cursor.execute(SQL_SELECT_SESSION, [session_id])
@@ -183,7 +183,7 @@ class Transaction(object):
 
   def add_song(self, path, session_id):
     SQL_INSERT_SONG = """
-      INSERT INTO streamtagger.songs
+      INSERT INTO songs
       (path, added, added_with) VALUES (%s, %s, %s)
       RETURNING id;
     """
@@ -195,7 +195,7 @@ class Transaction(object):
 
   def update_song(self, song_id, path, session_id):
     SQL_UPDATE_SONG = """
-      UPDATE streamtagger.songs
+      UPDATE songs
       SET (path, added, added_with) = (%s, %s, %s)
       WHERE id = %s;
     """
@@ -206,7 +206,7 @@ class Transaction(object):
     ids = {}
     SQL_FIND_TAGS = """
       SELECT id, name
-      FROM streamtagger.tag_definitions
+      FROM tag_definitions
       WHERE name IN %s
     """
     self._cursor.execute(SQL_FIND_TAGS, (tags,))
@@ -214,7 +214,7 @@ class Transaction(object):
       ids[row[1]] = row[0]
 
     SQL_DEFINE_TAG = """
-      INSERT INTO streamtagger.tag_definitions
+      INSERT INTO tag_definitions
       (name, created_by, created_at) VALUES (%s, %s, %s)
       RETURNING id;
     """
@@ -229,7 +229,7 @@ class Transaction(object):
   def get_tag_id(self, tag, user_id):
     SQL_FIND_TAG = """
       SELECT id
-      FROM streamtagger.tag_definitions
+      FROM tag_definitions
       WHERE name LIKE %s
     """
     self._cursor.execute(SQL_FIND_TAG, (tag,))
@@ -238,7 +238,7 @@ class Transaction(object):
       return row[0]
 
     SQL_DEFINE_TAG = """
-      INSERT INTO streamtagger.tag_definitions
+      INSERT INTO tag_definitions
       (name, created_by, created_at) VALUES (%s, %s, %s)
       RETURNING id;
     """
@@ -249,7 +249,7 @@ class Transaction(object):
 
   def set_tag(self, tag_def_id, song_id, user_id, value):
     SQL_UPSERT_TAG = """
-      INSERT INTO streamtagger.tags
+      INSERT INTO tags
       (tag_id, song_id, user_id, value, last_changed) VALUES (%s, %s, %s, %s, %s)
       ON CONFLICT (tag_id, song_id, user_id) DO
       UPDATE SET (value, last_changed) = (EXCLUDED.value, EXCLUDED.last_changed);
@@ -259,14 +259,14 @@ class Transaction(object):
 
   def clear_tag(self, tag_def_id, song_id, user_id):
     SQL_REMOVE_TAG = """
-      DELETE FROM streamtagger.tags
+      DELETE FROM tags
       WHERE tag_id = %s AND song_id = %s AND user_id = %s;
     """
     self._cursor.execute(SQL_REMOVE_TAG, [tag_def_id, song_id, user_id])
 
   def get_song_id(self, path):
     SQL_GET_SONG = """
-      SELECT id FROM streamtagger.songs
+      SELECT id FROM songs
       WHERE path LIKE %s;
     """
     self._cursor.execute(SQL_GET_SONG, [path])
@@ -280,9 +280,9 @@ class Transaction(object):
   def query_songs(self, query):
     SQL_SELECT_SONGS = """
       SELECT songs.id, songs.path, songs.added, users.username
-      FROM streamtagger.songs as songs
-      JOIN streamtagger.sessions as sessions ON songs.added_with = sessions.id
-      JOIN streamtagger.users as users ON sessions.user_id = users.id
+      FROM songs as songs
+      JOIN sessions as sessions ON songs.added_with = sessions.id
+      JOIN users as users ON sessions.user_id = users.id
       LIMIT 200;
     """
     songs = []
@@ -297,7 +297,7 @@ class Transaction(object):
   def get_song_attributes(self, song_id):
     SQL_SELECT_ATTRIBUTES = """
       SELECT name, value
-      FROM streamtagger.attributes
+      FROM attributes
       WHERE song_id = %s;
     """
     attributes = {}
@@ -308,7 +308,7 @@ class Transaction(object):
 
   def update_song_attributes(self, song_id, attributes):
     SQL_UPSERT_ATTRIBUTE = """
-      INSERT INTO streamtagger.attributes
+      INSERT INTO attributes
       (song_id, name, value) VALUES (%s, %s, %s)
       ON CONFLICT (song_id, name) DO
       UPDATE SET value = EXCLUDED.value;
@@ -319,8 +319,8 @@ class Transaction(object):
   def get_tags(self, song_id):
     SQL_SELECT_TAGS = """
       SELECT tags.user_id, tagdefs.name, tags.value
-      FROM streamtagger.tags as tags
-      JOIN streamtagger.tag_definitions as tagdefs ON tags.tag_id = tagdefs.id;
+      FROM tags as tags
+      JOIN tag_definitions as tagdefs ON tags.tag_id = tagdefs.id;
     """
     tags = {}
     self._cursor.execute(SQL_SELECT_TAGS, [song_id])
