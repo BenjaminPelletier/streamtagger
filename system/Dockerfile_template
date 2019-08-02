@@ -1,6 +1,4 @@
-# docker image build -f Dockerfile -t streamtagger/ui ../ui
-
-FROM python:3.7-buster
+FROM ${base_image_name}
 
 WORKDIR /usr/src/app
 

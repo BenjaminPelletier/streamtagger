@@ -1,5 +1,17 @@
 #!/bin/bash
 
+case $(uname -m) in
+armv7l)
+  image_name="arm32v7/postgres"
+  ;;
+x86_64)
+  image_name="postgres"
+  ;;
+*)
+  echo Unsupported architecture $(uname -m)
+  exit 1
+esac
+
 if [[ $(docker network ls) != *"streamtagger"* ]]; then
   echo Creating docker network 'streamtagger'...
   docker network create streamtagger
@@ -10,6 +22,8 @@ if [[ $(docker container ls) == *"streamtagger_db"* ]]; then
   docker container kill streamtagger_db
   docker container rm streamtagger_db
 fi
+
+mkdir -p storage/db
 
 echo Starting new streamtagger_db container
 docker run \
@@ -23,4 +37,4 @@ docker run \
   -e POSTGRES_PASSWORD=mysecretpassword \
   -v ${PWD}/storage/db:/var/lib/postgresql/data \
   -p 5432:5432 \
-  -d postgres
+  -d ${image_name}

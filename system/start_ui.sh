@@ -1,5 +1,17 @@
 #!/bin/bash
 
+case $(uname -m) in
+armv7l)
+  image_name="streamtagger/ui:rpiv7"
+  ;;
+x86_64)
+  image_name="streamtagger/ui"
+  ;;
+*)
+  echo Unsupported architecture $(uname -m)
+  exit 1
+esac
+
 if [[ $(docker container ls) == *"streamtagger_ui"* ]]; then
   echo Stopping and removing old ui container...
   docker container kill streamtagger_ui
@@ -16,4 +28,4 @@ docker run \
   -v "${PWD}/storage/media:/var/media" \
   -e ST_DB_CONNECTIONSTRING="host=streamtagger_db port=5432 user=streamtagger password=mysecretpassword" \
   -e PYTHONUNBUFFERED=TRUE \
-  -p 5000:5000 -d streamtagger/ui
+  -p 5000:5000 -d ${image_name}
