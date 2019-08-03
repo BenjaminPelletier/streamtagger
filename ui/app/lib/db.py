@@ -133,6 +133,27 @@ class Transaction(object):
     user_id = row[0]
     return user_id
 
+  def add_user_with_hash(self, username, password_hash):
+    SQL_INSERT_USER = """
+      INSERT INTO users
+      (username, password_hash) VALUES (%s, %s)
+      RETURNING id;
+    """
+
+    self._cursor.execute(SQL_INSERT_USER, [username, password_hash])
+    row = self._cursor.fetchone()
+    user_id = row[0]
+    return user_id
+
+  def update_user_with_hash(self, username, password_hash):
+    SQL_UPDATE_USER = """
+      UPDATE users
+      SET password_hash = %s
+      WHERE username = %s;
+    """
+
+    self._cursor.execute(SQL_UPDATE_USER, [password_hash, username])
+
   def get_user(self, username):
     SQL_SELECT_USER_BY_USERNAME = """
       SELECT id, password_hash

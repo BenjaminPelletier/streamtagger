@@ -2,10 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c6cf7454-fc9a-4657-8fb0-1aa81ed3f761" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/ui/app/users.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/static/js/user.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/templates/user.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/build_ui.sh" beforeDir="false" afterPath="$PROJECT_DIR$/system/build_ui.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/rebuild_ui.sh" beforeDir="false" afterPath="$PROJECT_DIR$/system/rebuild_ui.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/app/uploads.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/app/uploads.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/app/lib/db.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/app/lib/db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/static/js/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/ui/static/js/login.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/streamtagger.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/streamtagger.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,8 +19,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="HTML File" />
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>

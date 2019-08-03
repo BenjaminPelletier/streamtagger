@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from app import player, resources, sessions, uploads, startup
+from app import player, resources, sessions, uploads, users, startup
 from app.lib.flaskapp import app
 from app.lib import dbinit
 
