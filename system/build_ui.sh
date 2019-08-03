@@ -10,12 +10,24 @@ x86_64)
   image_name="streamtagger/ui"
   ;;
 *)
-  echo Unsupported architecture $(uname -m)
+  echo Unsupported architecture "$(uname -m)"
   exit 1
 esac
 
-echo ${base_image_name}
+if [[ $(docker container ls) == *"${image_name}"* ]]; then
+  echo Stopping and removing old ui container...
+  docker container kill streamtagger_ui
+  docker container rm streamtagger_ui
+fi
+
+if [[ $(docker image ls) == *"${image_name}"* ]]; then
+  echo 'ID of old image:'
+  docker inspect -f "{{ .Id }}" ${image_name}
+fi
 
 eval "echo \"$(cat Dockerfile_template)\"" > Dockerfile
 
 docker image build -f Dockerfile -t ${image_name} ../ui
+
+echo 'ID of new image:'
+docker inspect -f "{{ .Id }}" ${image_name}

@@ -55,7 +55,7 @@ def upload_post(transaction, session_id):
     transaction.update_song(song_id, dest_filename, session_id)
   else:
     # Song is new
-    transaction.add_song(dest_filename, session_id)
+    song_id = transaction.add_song(dest_filename, session_id)
 
   song_attributes = librarian.read_song_attributes(local_dest_filename)
   transaction.update_song_attributes(song_id, song_attributes)
