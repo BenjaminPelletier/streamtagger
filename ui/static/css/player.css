@@ -49,6 +49,9 @@ td {
 #controls_container {
     width: 100%;
     text-align: center;
+    position: fixed;
+    bottom: 0;
+    background-color: white;
 }
 
 #controls_container > * {
