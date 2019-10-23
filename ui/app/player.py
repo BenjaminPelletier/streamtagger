@@ -9,7 +9,7 @@ import flask
 def make_table(transaction, users):
   songs = transaction.query_songs('')
 
-  header = (('Title', None), ('Artist', None), ('Added', 'date-column'))
+  header = ('Title', 'Artist', 'Added')
   song_rows = []
   song_ids = [song.song_id for song in songs]
   song_paths = ['media/' + song.path for song in songs]
@@ -17,7 +17,7 @@ def make_table(transaction, users):
     cols = []
     cols.append(song.get_title())
     cols.append(song.get_artist())
-    cols.append(song.get_added_at())
+    cols.append(('moment-relative', song.get_added_at()))
     song_rows.append(cols)
   table_template = jinja.env.get_template('song_table.html')
   return table_template.render(header=header, song_rows=song_rows, song_ids=song_ids, song_paths=song_paths)

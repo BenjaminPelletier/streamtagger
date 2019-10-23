@@ -2,6 +2,11 @@
     float: left;
 }
 
+tr:nth-child(even) {
+    background: #eee
+}
+
+
 /* Dropdown Button */
 .dropbtn {
   background-color: #3498db;

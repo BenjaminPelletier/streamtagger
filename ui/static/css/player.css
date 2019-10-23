@@ -7,6 +7,10 @@ td {
     padding: 2px 2px;
 }
 
+th {
+    text-align: left;
+}
+
 .song_button {
     width: 24px;
     height: 24px;

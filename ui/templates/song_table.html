@@ -2,9 +2,8 @@
     <thead>
         <tr>
             <th></th>
-            <th></th>
-            {% for col, classname in header %}
-            <th {% if classname %}class="{{ classname }}"{% endif %}>{{ col }}</th>
+            {% for col in header %}
+            <th>{{ col }}</th>
             {% endfor %}
             <th></th>
         </tr>
@@ -12,10 +11,13 @@
     <tbody>
         {% for cols, song_id, song_path, i in zip(song_rows, song_ids, song_paths, range(len(song_rows))) %}
         <tr data-path="{{ song_path }}" data-songid="{{ song_id }}">
-            <td>{{ i+1 }}</td>
             <td><div class="song_button play_song_button" onclick="play_song(this)"></div></td>
             {% for col in cols %}
+                {% if col is string %}
             <td>{{ col|safe }}</td>
+                {% else %}
+            <td class="{{ col[0] }}">{{ col[1]|safe }}</td>
+                {% endif %}
             {% endfor %}
             <td>
                 <div class="dropdown">
