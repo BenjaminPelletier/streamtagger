@@ -20,13 +20,7 @@
                 {% endif %}
             {% endfor %}
             <td>
-                <div class="dropdown">
-                  <div onclick="show_user_dropdown('action_{{ song_id }}')" class="actionbtn action_context"></div>
-                  <div id="action_{{ song_id }}" class="dropdown-content">
-                    <a href="#" onclick="tag_song(this)">Tag</a>
-                    <a href="#" onclick="delete_song(this)">Delete song</a>
-                  </div>
-                </div>
+                <div onclick="toggle_song_details('{{ song_id }}', {{ len(cols) + 1 }})" class="actionbtn action_context"></div>
             </td>
         </tr>
         {% endfor %}

@@ -1,5 +1,6 @@
 $(document).ready(function() {
     $( "#dialog-confirm-delete-song" ).hide();
+    $( "#song_details_template" ).hide();
 
     $(".moment-relative").each(function() {
         $(this).text(moment($(this).text()).fromNow());
@@ -17,6 +18,11 @@ $(document).ready(function() {
 } );
 
 var playing_song_id = null;
+
+// Get the <tr> element that contains the song with specified id
+function get_song_row_by_id(id) {
+    return $("tr[data-songid='" + id + "']")[0];
+}
 
 // Get the <button> element that will play song with specified id
 function get_play_song_button_by_id(id) {
@@ -99,4 +105,12 @@ function delete_song(song_id) {
             $(this).siblings('.ui-dialog-buttonpane').find('button:eq(1)').focus();
         }
     });
+}
+
+function toggle_song_details(song_id, columns) {
+    var $newrow = $('<tr><td></td><td colspan="' + columns + '"></td></tr>');
+    var $details = $('#song_details_template > form').clone();
+    var $td = $newrow.find('td:nth-of-type(2)');
+    $td.append($details);
+    $newrow.insertAfter(get_song_row_by_id(song_id));
 }
