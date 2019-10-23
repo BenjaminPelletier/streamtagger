@@ -304,6 +304,7 @@ class Transaction(object):
       FROM songs as songs
       JOIN sessions as sessions ON songs.added_with = sessions.id
       JOIN users as users ON sessions.user_id = users.id
+      ORDER BY songs.added DESC
       LIMIT 200;
     """
     songs = []

@@ -14,42 +14,41 @@
     <link rel="stylesheet" type="text/css" href="static/css/player.css">
 </head>
 <body>
-<div class="top_container">
 
-  <div id="menubar">
-      <div class="dropdown" id="home">
-        <button onclick="goHome()" class="dropbtn">Home</button>
-      </div>
-      <div class="dropdown" id="add_content">
-        <button onclick="show_user_dropdown('content_dropdown')" class="dropbtn">+</button>
-        <div id="content_dropdown" class="dropdown-content">
-          <a href="upload">Songs</a>
+<div id="top_container">
+    <div id="menubar">
+        <div class="dropdown" id="home">
+            <button onclick="goHome()" class="dropbtn">Home</button>
         </div>
-      </div>
-      <div class="dropdown" id="user_context">
-        <button onclick="show_user_dropdown('user_dropdown')" class="dropbtn">{{ username }}</button>
-        <div id="user_dropdown" class="dropdown-content">
-          <a href="#" onclick="logout()">Logout</a>
+        <div class="dropdown" id="add_content">
+            <button onclick="show_user_dropdown('content_dropdown')" class="dropbtn">+</button>
+            <div id="content_dropdown" class="dropdown-content">
+                <a href="upload">Songs</a>
+            </div>
         </div>
-      </div>
-  </div>
+        <div class="dropdown" id="user_context">
+            <button onclick="show_user_dropdown('user_dropdown')" class="dropbtn">{{ username }}</button>
+            <div id="user_dropdown" class="dropdown-content">
+                <a href="#" onclick="logout()">Logout</a>
+            </div>
+        </div>
+    </div>
 
-  <div id="tablecontainer">
-      {{ initial_song_table|safe }}
-  </div>
+    <div id="tablecontainer">
+        {{ initial_song_table|safe }}
+    </div>
 
-  <div id="controls_container">
-    <div id="prev_song_button" onclick="play_next_song(-1)"></div>
-    <audio id="audio" controls>
-      <source id="audio_source" src="" type="audio/mpeg">
-    </audio>
-    <div id="next_song_button" onclick="play_next_song(1)"></div>
-  </div>
-
+    <div id="controls_container">
+        <div id="prev_song_button" onclick="play_next_song(-1)"></div>
+        <audio id="audio" controls>
+            <source id="audio_source" src="" type="audio/mpeg">
+        </audio>
+        <div id="next_song_button" onclick="play_next_song(1)"></div>
+    </div>
 </div>
 
 <div id="dialog-confirm-delete-song" title="Delete song?">
-  <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>This song and all its associated tags will be removed from the database. Are you sure?</p>
+    <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>This song and all its associated tags will be removed from the database. Are you sure?</p>
 </div>
 
 </body>

@@ -1,4 +1,4 @@
-.top_container {
+#top_container {
     width: 80%;
     margin: auto;
 }
@@ -37,7 +37,15 @@ td {
 
 #menubar {
     width: 100%;
+    position: -webkit-sticky;
+    position: sticky;
     text-align: right;
+    top: 0;
+    background-color: white;
+    z-index: 100;
+    padding-top: 4px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid gray;
 }
 
 #menubar > * {
@@ -49,9 +57,13 @@ td {
 #controls_container {
     width: 100%;
     text-align: center;
-    position: fixed;
+    position: -webkit-sticky;
+    position: sticky;
     bottom: 0;
     background-color: white;
+    padding-top: 10px;
+    padding-bottom: 4px;
+    border-top: 1px solid gray;
 }
 
 #controls_container > * {
