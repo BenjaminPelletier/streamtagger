@@ -1,6 +1,5 @@
 import uuid
 
-from .lib import config
 from .lib import db
 from .lib.flaskapp import app
 from .lib import jinja
@@ -9,17 +8,6 @@ from . import player
 
 import flask
 
-def render_songs(songs, users, username):
-  if len(songs) == 1:
-    song = songs[0]
-    song_template = jinja.env.get_template('song_by_artist_title.html')
-    return song_template.render(song_title=song.get_title(),
-                                song_artist=song.get_artist(),
-                                song_id=song.song_id,
-                                song_path='/media/' + song.path,
-                                username=username)
-  else:
-    return player.render_player(songs=songs, users=users, username=username)
 
 @app.route('/<artist>/<song_title>', methods=['GET'])
 def songs_by_artist_title(artist, song_title):
@@ -33,7 +21,7 @@ def songs_by_artist_title(artist, song_title):
   if len(songs) == 0:
     return flask.jsonify({'status': 'error',
                           'message': 'No songs found with artist %s and title %s' % (artist, song_title)}), 404
-  return render_songs(songs, users, username)
+  return player.render_player(songs=songs, users=users, username=username)
 
 
 @app.route('/<request_id>', methods=['GET'])
@@ -68,4 +56,4 @@ def songs_by_id(request_id):
     if len(songs) == 0:
       return flask.jsonify({'status': 'error',
                             'message': 'No songs found with artist, title, or ID "%s"' % request_id}), 404
-    return render_songs(songs, users, username)
+    return player.render_player(songs=songs, users=users, username=username)
