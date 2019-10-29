@@ -32,16 +32,15 @@
         </div>
     </div>
 
-    <div id="tablecontainer">
-        {{ initial_song_table|safe }}
-    </div>
-
-    <div id="controls_container">
-        <div id="prev_song_button" onclick="play_next_song(-1)"></div>
-        <audio id="audio" controls>
-            <source id="audio_source" src="" type="audio/mpeg">
-        </audio>
-        <div id="next_song_button" onclick="play_next_song(1)"></div>
+    <div id="songcontainer">
+        <div id="songtitle">{{ song_title }}</div>
+        <div id="songartist">{{ song_artist }}</div>
+        <div id="songid">{{ song_id }}</div>
+        <div id="songcontrols">
+            <audio id="audio" controls>
+                <source id="audio_source" src="{{ song_path }}" type="audio/mpeg">
+            </audio>
+        </div>
     </div>
 </div>
 

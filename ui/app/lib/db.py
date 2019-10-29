@@ -298,23 +298,58 @@ class Transaction(object):
     else:
       return None
 
-  def query_songs(self, query):
+  def get_songs_by_ids(self, song_ids):
     SQL_SELECT_SONGS = """
       SELECT songs.id, songs.path, songs.added, users.username
       FROM songs as songs
       JOIN sessions as sessions ON songs.added_with = sessions.id
       JOIN users as users ON sessions.user_id = users.id
-      ORDER BY songs.added DESC
-      LIMIT 200;
+      WHERE songs.id IN (%s)
+      ORDER BY songs.added DESC;
     """
+    if not song_ids:
+      return []
+    song_id_list = ', '.join("'" + id + "'" for id in song_ids)
+    query = SQL_SELECT_SONGS % song_id_list
     songs = []
-    self._cursor.execute(SQL_SELECT_SONGS)
+    self._cursor.execute(query)
     for row in self._cursor.fetchall():
       song_id = row[0]
       attributes = self.get_song_attributes(song_id)
       tags = self.get_tags(song_id)
       songs.append(Song(song_id, row[1], row[2], row[3], attributes, tags))
     return songs
+
+  def query_songs(self, query):
+    SQL_SELECT_SONG_IDS = """
+      SELECT songs.id, songs.added
+      FROM songs as songs
+      ORDER BY songs.added DESC
+      LIMIT 200;
+    """
+    self._cursor.execute(SQL_SELECT_SONG_IDS)
+    song_ids = [row[0] for row in self._cursor.fetchall()]
+    return self.get_songs_by_ids(song_ids)
+
+  def find_songs_by_artist_title(self, artist, title):
+    SQL_FIND_SONGS_BY_ARTIST = """
+      SELECT song_id
+      FROM attributes
+      WHERE (name = 'artist' OR name = 'albumartist')
+        AND value ILIKE '%%%s%%';
+    """ % artist
+    SQL_FIND_SONGS_BY_TITLE = """
+      SELECT song_id
+      FROM attributes
+      WHERE name = 'title'
+        AND value ILIKE '%%%s%%';
+    """ % title
+    self._cursor.execute(SQL_FIND_SONGS_BY_ARTIST)
+    songs_with_artist = {row[0] for row in self._cursor.fetchall()}
+    self._cursor.execute(SQL_FIND_SONGS_BY_TITLE)
+    songs_with_title = {row[0] for row in self._cursor.fetchall()}
+    song_ids = songs_with_artist.intersection(songs_with_title)
+    return self.get_songs_by_ids(song_ids)
 
   def get_song_attributes(self, song_id):
     SQL_SELECT_ATTRIBUTES = """

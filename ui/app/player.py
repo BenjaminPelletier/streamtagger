@@ -6,9 +6,7 @@ from . import sessions
 
 import flask
 
-def make_table(transaction, users):
-  songs = transaction.query_songs('')
-
+def make_table(songs, users):
   header = ('Title', 'Artist', 'Added')
   song_rows = []
   song_ids = [song.song_id for song in songs]
@@ -23,6 +21,12 @@ def make_table(transaction, users):
   return table_template.render(header=header, song_rows=song_rows, song_ids=song_ids, song_paths=song_paths)
 
 
+def render_player(songs, users, username):
+  table_html = make_table(songs, users)
+  player = jinja.env.get_template('player.html')
+  return player.render(initial_song_table=table_html, username=username)
+
+
 @app.route('/', methods=['GET'])
 def index():
   with db.transaction() as transaction:
@@ -31,6 +35,5 @@ def index():
       return flask.redirect('/login')
     users = transaction.get_users()
     username = users[user_id]
-    table_html = make_table(transaction, users)
-  player = jinja.env.get_template('player.html')
-  return player.render(initial_song_table=table_html, username=username)
+    songs = transaction.query_songs('')
+  return render_player(songs, users, username)
