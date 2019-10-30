@@ -11,7 +11,7 @@ import flask
 
 
 @app.route('/song_details/<song_id>', methods=['GET'])
-def ajax_get_song_details(song_id):
+def get_song_details(song_id):
   with db.transaction() as transaction:
     user_id, session_id = sessions.get_session(transaction)
     if user_id is None:
@@ -39,7 +39,7 @@ def ajax_get_song_details(song_id):
   )
 
 @app.route('/song_details/<song_id>', methods=['POST'])
-def ajax_post_song_details(song_id):
+def post_song_details(song_id):
   with db.transaction() as transaction:
     user_id, session_id = sessions.get_session(transaction)
     if user_id is None:

@@ -19,12 +19,23 @@ def upload_error(message):
   return flask.jsonify({'status': 'error', 'message': message}), 400
 
 
-def upload_get():
+@app.route('/upload', methods=['GET'])
+def get_upload():
+  with db.transaction() as transaction:
+    user_id, session_id = sessions.get_session(transaction)
+    if user_id is None:
+      return flask.jsonify({'message': 'You must be logged in to upload files'}), 401
   upload_template = jinja.env.get_template('upload.html')
   return upload_template.render()
 
 
-def upload_post(transaction, session_id):
+@app.route('/upload', methods=['POST'])
+def post_upload():
+  with db.transaction() as transaction:
+    user_id, session_id = sessions.get_session(transaction)
+    if user_id is None:
+      return flask.jsonify({'message': 'You must be logged in to upload files'}), 401
+
   if 'file' not in flask.request.files:
     return upload_error('No file specified in upload request')
   if len(flask.request.files) == 0:
@@ -63,19 +74,3 @@ def upload_post(transaction, session_id):
   remote_dest_filename = 'media/' + dest_filename
   transaction.commit()
   return flask.jsonify({'status': 'ok', 'path': remote_dest_filename})
-
-
-@app.route('/upload', methods=['GET', 'POST'])
-def upload():
-  with db.transaction() as transaction:
-    user_id, session_id = sessions.get_session(transaction)
-    if user_id is None:
-      result = flask.jsonify({'message': 'You must be logged in to upload files'}), 401
-
-    if flask.request.method == 'GET':
-      result = upload_get()
-
-    if flask.request.method == 'POST':
-      result = upload_post(transaction, session_id)
-
-  return result

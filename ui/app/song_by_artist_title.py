@@ -9,7 +9,7 @@ from . import player
 import flask
 
 
-@app.route('/<artist>/<song_title>', methods=['GET'])
+@app.route('/songs/<artist>/<song_title>', methods=['GET'])
 def songs_by_artist_title(artist, song_title):
   with db.transaction() as transaction:
     user_id, session_id = sessions.get_session(transaction)
@@ -24,7 +24,7 @@ def songs_by_artist_title(artist, song_title):
   return player.render_player(songs=songs, users=users, username=username)
 
 
-@app.route('/<request_id>', methods=['GET'])
+@app.route('/songs/<request_id>', methods=['GET'])
 def songs_by_id(request_id):
   with db.transaction() as transaction:
     user_id, session_id = sessions.get_session(transaction)
