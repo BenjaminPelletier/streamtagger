@@ -132,8 +132,9 @@ function toggle_song_details(song_id, columns) {
             $td.append(data);
 
             // Handle updating information
-            $td.find( 'form' ).submit(function( event ) {
-                $.post( '/song_details/' + song_id )
+            $detailsform = $td.find('form');
+            $detailsform.submit(function( event ) {
+                $.post('/song_details/' + song_id, $detailsform.serialize())
                     .done(function( data ) {
                         // Song details updated successfully
                         $newrow.remove();

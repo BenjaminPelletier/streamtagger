@@ -26,20 +26,22 @@ class Song(object):
     key = self.get_artist_key()
     return self.attributes[key] if key else ''
 
-  def get_artist_key(self):
+  def get_artist_key(self, use_default=False):
     for key in Song.ARTIST_KEYS:
       if key in self.attributes:
         return key
-    return None
+    return Song.ARTIST_KEYS[0] if use_default else None
 
   def set_title(self, title):
     self.attributes[Song.TITLE_KEY] = title
 
   def set_artist(self, artist):
-    key = self.get_artist_key()
-    if key is None:
-      key = Song.ARTIST_KEYS[0]
-    self.attributes[key] = artist
+    self.attributes[self.get_artist_key(use_default=True)] = artist
 
   def get_added_at(self):
     return self.added.isoformat()
+
+  def changed_attributes(self, new_attributes):
+    for k, v in new_attributes.items():
+      if k in self.attributes or v:
+        yield k

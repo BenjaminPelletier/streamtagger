@@ -1,17 +1,17 @@
 <form class="song_details" id="song_details_{{ song_id }}">
     <table class="song_details">
         <tr>
-            <td>Title</td><td><input class="song_details title" value="{{ song_title }}"></td>
+            <td>Title</td><td><input class="song_details title" name="{{ song_title_key }}" value="{{ song_title }}" data-unchanged="{{ song_title }}"></td>
         </tr>
         <tr>
-            <td>Artist</td><td><input class="song_details artist" value="{{ song_artist }}"></td>
+            <td>Artist</td><td><input class="song_details artist" name="{{ song_artist_key }}" value="{{ song_artist }}" data-unchanged="{{ song_artist }}"></td>
         </tr>
         <tr>
-            <td>Tags</td><td><input class="song_details tags" value="{{ song_tags }}"></td>
+            <td>Tags</td><td><input class="song_details tags" name="tags" value="{{ song_tags }}" data-unchanged="{{ song_tags }}"></td>
         </tr>
         {% for k, v in song_attributes.items() %}
         <tr>
-            <td>{{ k }}</td><td><input class="song_details attribute" value="{{ v }}"></td>
+            <td>{{ k }}</td><td><input class="song_details attribute" name="{{ k }}" value="{{ v }}" data-unchanged="{{ v }}"></td>
         </tr>
         {% endfor %}
         <tr>
