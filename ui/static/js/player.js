@@ -24,6 +24,16 @@ function get_song_row_by_id(id) {
     return $("tr[data-songid='" + id + "']")[0];
 }
 
+// Get the jQuery wrapper around the <tr> element that contains song details for the specified ID, or null if not present
+function get_song_details_row_by_id(song_id) {
+    $detailsrow = $(get_song_row_by_id(song_id)).next('tr');
+    if ($detailsrow.length == 1 && $detailsrow[0].className == 'song_details') {
+        return $detailsrow;
+    } else {
+        return null;
+    }
+}
+
 // Get the <button> element that will play song with specified id
 function get_play_song_button_by_id(id) {
     return $("tr[data-songid='" + id + "'] .song_button")[0];
@@ -108,9 +118,39 @@ function delete_song(song_id) {
 }
 
 function toggle_song_details(song_id, columns) {
-    var $newrow = $('<tr><td></td><td colspan="' + columns + '"></td></tr>');
-    var $details = $('#song_details_template > form').clone();
-    var $td = $newrow.find('td:nth-of-type(2)');
-    $td.append($details);
-    $newrow.insertAfter(get_song_row_by_id(song_id));
+    var $detailsrow = get_song_details_row_by_id(song_id);
+    if ($detailsrow != null) {
+        // Details row is already open; close (remove) it
+        $detailsrow.remove();
+    } else {
+        // Details row is not open; create it via AJAX query
+        var $newrow = $('<tr class="song_details"><td></td><td colspan="' + columns + '"></td></tr>');
+        var $td = $newrow.find('td:nth-of-type(2)');
+        $.get( '/song_details/' + song_id )
+          .done(function( data ) {
+            // Insert the song data form into the table
+            $td.append(data);
+
+            // Handle updating information
+            $td.find( 'form' ).submit(function( event ) {
+                $.post( '/song_details/' + song_id )
+                    .done(function( data ) {
+                        // Song details updated successfully
+                        $newrow.remove();
+                        alert("Success");
+                    })
+                    .fail(function(jqXHR, textStatus, error) {
+                        // Failed to update song details
+                        alert('Error updating details: ' + error);
+                    });
+                event.preventDefault();
+            });
+
+            $newrow.insertAfter(get_song_row_by_id(song_id));
+          })
+          .fail(function(jqXHR, textStatus, error) {
+            $td.append(jqXHR.responseText);
+            $newrow.insertAfter(get_song_row_by_id(song_id));
+          });
+    }
 }
