@@ -96,3 +96,11 @@ th {
     right: 0;
     visibility: hidden;
 }
+
+table.song_details {
+    width: 100%;
+}
+
+input.song_details {
+    width: 100%;
+}

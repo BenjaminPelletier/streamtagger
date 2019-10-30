@@ -1,5 +1,5 @@
 <form class="song_details" id="song_details_{{ song_id }}">
-    <table>
+    <table class="song_details">
         <tr>
             <td>Title</td><td><input class="song_details title" value="{{ song_title }}"></td>
         </tr>
@@ -7,8 +7,13 @@
             <td>Artist</td><td><input class="song_details artist" value="{{ song_artist }}"></td>
         </tr>
         <tr>
-            <td>Tags</td><td colspan="3"><input class="song_details tags" value="{{ song_tags }}"></td>
+            <td>Tags</td><td><input class="song_details tags" value="{{ song_tags }}"></td>
         </tr>
+        {% for k, v in song_attributes.items() %}
+        <tr>
+            <td>{{ k }}</td><td><input class="song_details attribute" value="{{ v }}"></td>
+        </tr>
+        {% endfor %}
         <tr>
             <td></td><td><input type="submit" value="Update"></td>
         </tr>
