@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 
 RUN apt-get update && \
     apt-get -y install libtag1-dev python3-dev && \
-    pip install flask gunicorn jinja2 psycopg2 pytaglib
+    pip install flask gunicorn jinja2 psycopg2 pytaglib mutagen
 
 COPY . .
 

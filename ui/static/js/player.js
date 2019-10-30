@@ -138,11 +138,10 @@ function toggle_song_details(song_id, columns) {
                     .done(function( data ) {
                         // Song details updated successfully
                         $newrow.remove();
-                        alert("Success");
                     })
                     .fail(function(jqXHR, textStatus, error) {
                         // Failed to update song details
-                        alert('Error updating details: ' + error);
+                        alert('Error updating details: ' + error + '\n' + jqXHR.responseText);
                     });
                 event.preventDefault();
             });
