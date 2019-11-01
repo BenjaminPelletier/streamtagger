@@ -1,5 +1,9 @@
+import collections
 import datetime
 import json
+
+
+TagDefinition = collections.namedtuple('TagDefinition', ('id', 'name', 'type', 'created_by', 'created_at'))
 
 
 class TagSet(dict):
@@ -33,6 +37,8 @@ class Tag(dict):
   TYPE_THUMBS_UP_DOWN = 'thumbsupdown'
   TYPE_STARS = 'stars'
   TYPE_FACES = 'faces'
+  TYPES = {TYPE_HASH, TYPE_THUMBS_UP_DOWN, TYPE_STARS, TYPE_FACES}
+
   def __init__(self, name, tag_type):
     super(Tag, self).__init__()
     self.name = name

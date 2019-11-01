@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Streamtagger: Tags</title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="/static/js/tags.js"></script>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr><td>Tag</td><td>Type</td></tr>
+        </thead>
+        <tbody>
+            {% for tagdef_name, tag_def in tag_defs.items() %}
+            <tr><td>{{ tagdef_name }}</td><td>{{ tag_def.type }}</td></tr>
+            {% endfor %}
+            <tr>
+                <form action="#" id="new_tagdef_info">
+                    <td><input type="text" name="new_tag_name"></td>
+                    <td>
+                        <select name="new_tag_type">
+                            <option value="hashtag">Hashtag</option>
+                            <option value="thumbsupdown">Thumbs up/down &#x1F44D;&#x1F44E;</option>
+                            <option value="stars">Stars &#x2B50;&#x2B50;&#x2B50;&#x2B50;&#x2B50;</option>
+                            <option value="faces">Faces &#x1F61E;&#x1F615;&#x1F610;&#x1F603;&#x1F60D;</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="submit" value="Create">
+                    </td>
+                </form>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

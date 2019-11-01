@@ -237,14 +237,25 @@ class Transaction(object):
     for row in self._cursor.fetchall():
       ids[row[1]] = row[0]
 
-  def create_tag(self, name, tag_type, user_id):
-    SQL_CREATE_TAG = """
+  def get_tag_definitions(self):
+    SQL_GET_TAG_DEFINITIONS = """
+      SELECT id, name, type, created_by, created_at
+      FROM tag_definitions
+    """
+    tag_defs = {}
+    self._cursor.execute(SQL_GET_TAG_DEFINITIONS)
+    for row in self._cursor.fetchall():
+      tag_defs[row[1]] = tags.TagDefinition(id=row[0], name=row[1], type=row[2], created_by=row[3], created_at=row[4])
+    return tag_defs
+
+  def create_tag_definition(self, name, tag_type, user_id):
+    SQL_CREATE_TAG_DEFINITION = """
       INSERT INTO tag_definitions
-      (name, type, created_by, created_at) VALUES (%s, %s %s, %s)
+      (name, type, created_by, created_at) VALUES (%s, %s, %s, %s)
       RETURNING id;
     """
     timestamp = datetime.datetime.utcnow().isoformat()
-    self._cursor.execute(SQL_CREATE_TAG, (name, tag_type, user_id, timestamp))
+    self._cursor.execute(SQL_CREATE_TAG_DEFINITION, (name, tag_type, user_id, timestamp))
     row = self._cursor.fetchone()
     return row[0]
 

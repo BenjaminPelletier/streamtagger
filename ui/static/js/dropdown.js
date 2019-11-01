@@ -24,5 +24,9 @@ function logout() {
 }
 
 function goHome() {
-    window.location.href = "/";
+    window.location.href = '/';
+}
+
+function goTags() {
+    window.location.href = '/tags';
 }

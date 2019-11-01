@@ -2,6 +2,11 @@
     float: left;
 }
 
+#tags {
+    float: left;
+    margin-left: 4px;
+}
+
 tr:nth-child(even) {
     background: #eee
 }
