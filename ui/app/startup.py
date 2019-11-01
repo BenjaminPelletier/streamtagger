@@ -7,3 +7,5 @@ log = logging.getLogger('streamtagger')
 
 log.info('Initializing database...')
 dbinit.init_db()
+
+log.info('Startup complete; system ready.')

@@ -10,12 +10,12 @@ def make_table(songs, users):
   header = ('Title', 'Artist', 'Added')
   song_rows = []
   song_ids = [song.song_id for song in songs]
-  song_paths = ['media/' + song.path for song in songs]
+  song_paths = ['/media/' + song.path for song in songs]
   for i, song in enumerate(songs):
     cols = []
-    cols.append(song.get_title())
-    cols.append(song.get_artist())
-    cols.append(('moment-relative', song.get_added_at()))
+    cols.append(('col_title', song.title if song.title else ''))
+    cols.append(('col_artist', song.artist if song.artist else ''))
+    cols.append(('moment-relative', song.added_at))
     song_rows.append(cols)
   table_template = jinja.env.get_template('song_table.html')
   return table_template.render(header=header, song_rows=song_rows, song_ids=song_ids, song_paths=song_paths)

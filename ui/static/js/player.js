@@ -19,14 +19,14 @@ $(document).ready(function() {
 
 var playing_song_id = null;
 
-// Get the <tr> element that contains the song with specified id
+// Get the jQuery wrapper around the <tr> element that contains the song with specified id
 function get_song_row_by_id(id) {
-    return $("tr[data-songid='" + id + "']")[0];
+    return $("tr[data-songid='" + id + "']");
 }
 
 // Get the jQuery wrapper around the <tr> element that contains song details for the specified ID, or null if not present
 function get_song_details_row_by_id(song_id) {
-    $detailsrow = $(get_song_row_by_id(song_id)).next('tr');
+    $detailsrow = get_song_row_by_id(song_id).next('tr');
     if ($detailsrow.length == 1 && $detailsrow[0].className == 'song_details') {
         return $detailsrow;
     } else {
@@ -137,6 +137,14 @@ function toggle_song_details(song_id, columns) {
                 $.post('/song_details/' + song_id, $detailsform.serialize())
                     .done(function( data ) {
                         // Song details updated successfully
+                        if ('updates' in data) {
+                            if ('title' in data['updates']) {
+                                get_song_row_by_id(song_id).find('td.col_title').text(data['updates']['title']);
+                            }
+                            if ('artist' in data['updates']) {
+                                get_song_row_by_id(song_id).find('td.col_artist').text(data['updates']['artist']);
+                            }
+                        }
                         $newrow.remove();
                     })
                     .fail(function(jqXHR, textStatus, error) {
@@ -146,11 +154,11 @@ function toggle_song_details(song_id, columns) {
                 event.preventDefault();
             });
 
-            $newrow.insertAfter(get_song_row_by_id(song_id));
+            $newrow.insertAfter(get_song_row_by_id(song_id)[0]);
           })
           .fail(function(jqXHR, textStatus, error) {
             $td.append(jqXHR.responseText);
-            $newrow.insertAfter(get_song_row_by_id(song_id));
+            $newrow.insertAfter(get_song_row_by_id(song_id)[0]);
           });
     }
 }
