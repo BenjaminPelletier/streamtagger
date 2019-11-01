@@ -73,48 +73,49 @@ def post_song_details(song_id):
     username = users[user_id]
     song_summaries = transaction.get_songs_by_ids([song_id])
 
-    if len(song_summaries) == 0:
-      return flask.jsonify({'status': 'error',
-                            'message': 'No song found with ID %s' % song_id}), 404
-    summary = song_summaries[0]
+  if len(song_summaries) == 0:
+    return flask.jsonify({'status': 'error',
+                          'message': 'No song found with ID %s' % song_id}), 404
+  summary = song_summaries[0]
 
-    # Update attributes, if necessary
-    try:
-      id3 = mutagen.easyid3.EasyID3(config.media_path + summary.path)
-    except mutagen.id3.ID3NoHeaderError:
-      id3 = mutagen.easyid3.EasyID3()
+  # Update attributes, if necessary
+  try:
+    id3 = mutagen.easyid3.EasyID3(config.media_path + summary.path)
+  except mutagen.id3.ID3NoHeaderError:
+    id3 = mutagen.easyid3.EasyID3()
 
-    changes = False
-    for k, v in flask.request.form.items():
-      if k == 'tags':
-        continue  # TODO: process tags
+  changes = False
+  for k, v in flask.request.form.items():
+    if k == 'tags':
+      continue  # TODO: process tags
 
-      if not v:
-        # User blanked tag value
-        if (k in id3) and id3[k][v]:
-          # Tag in file is not blanked; remove it
-          del id3[k]
-          changes = True
-        else:
-          # No tag in file, or it's already blank; no change
-          continue
+    if not v:
+      # User blanked tag value
+      if (k in id3) and id3[k][v]:
+        # Tag in file is not blanked; remove it
+        del id3[k]
+        changes = True
+      else:
+        # No tag in file, or it's already blank; no change
+        continue
 
-      if k in id3:
-        # Tag already exists in file
-        if id3[k][0] == v:
-          # No change to tag value
-          continue
+    if k in id3:
+      # Tag already exists in file
+      if id3[k][0] == v:
+        # No change to tag value
+        continue
 
-      # Add or update tag value
-      id3[k] = [v]
-      changes = True
+    # Add or update tag value
+    id3[k] = [v]
+    changes = True
 
-    if changes:
-      id3.save(config.media_path + summary.path, v2_version=3)
+  if changes:
+    id3.save(config.media_path + summary.path, v2_version=3)
 
-    song_details = song.SongDetails(config.media_path + summary.path)
-    summary, to_update = song_details.make_summary(summary.path, summary)
-    if to_update:
+  song_details = song.SongDetails(config.media_path + summary.path)
+  summary, to_update = song_details.make_summary(summary.path, summary)
+  if to_update:
+    with db.transaction() as transaction:
       transaction.update_song(summary)
       transaction.commit()
 
