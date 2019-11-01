@@ -5,6 +5,7 @@ from .lib import config
 from .lib import db
 from .lib.flaskapp import app
 from .lib import jinja
+from .lib import song
 from . import librarian
 from . import sessions
 
@@ -60,17 +61,26 @@ def post_upload():
   local_dest_filename = os.path.join(config.media_path, dest_filename)
   file.save(local_dest_filename)
 
-  song_id = transaction.get_song_id(dest_filename)
-  if song_id:
-    # Song with this filename already exists
-    transaction.update_song(song_id, dest_filename, session_id)
-  else:
-    # Song is new
-    song_id = transaction.add_song(dest_filename, session_id)
+  song_details = song.SongDetails(local_dest_filename)
 
-  song_attributes = librarian.read_song_attributes(local_dest_filename)
-  transaction.update_song_attributes(song_id, song_attributes)
+  with db.transaction() as transaction:
+    song_id = transaction.get_song_id(dest_filename)
+    if song_id:
+      # Song with this filename already exists
+      old_summary = transaction.get_songs_by_ids([song_id])[0]
+      summary, to_update = song_details.make_summary(dest_filename, old_summary)
+      transaction.update_song(summary)
+    else:
+      # Song is new
+      users = transaction.get_users()
+      username = users[user_id]
+      transaction.add_song(
+        path=dest_filename,
+        title=song_details.title,
+        artist=song_details.artist,
+        user_id=user_id,
+        username=username)
 
-  remote_dest_filename = 'media/' + dest_filename
-  transaction.commit()
-  return flask.jsonify({'status': 'ok', 'path': remote_dest_filename})
+    remote_dest_filename = '/media/' + dest_filename
+    transaction.commit()
+    return flask.jsonify({'status': 'ok', 'path': remote_dest_filename})

@@ -215,7 +215,7 @@ class Transaction(object):
     song_id = row[0]
     return SongSummary(song_id=song_id, path=path, title=title, artist=artist, added_at=timestamp, added_by=username)
 
-  def update_song(self, song):
+  def update_song(self, summary):
     SQL_UPDATE_SONG = """
       UPDATE songs
       SET (path, title, artist, added_at, added_by) = (%s, %s, %s, %s, u.id)
@@ -223,7 +223,8 @@ class Transaction(object):
       WHERE songs.id = %s;
     """
     self._cursor.execute(SQL_UPDATE_SONG,
-                         [song.path, song.title, song.artist, song.added_at, song.added_by, str(song.song_id)])
+                         [summary.path, summary.title, summary.artist, summary.added_at, summary.added_by,
+                          str(summary.song_id)])
 
   def get_tag_ids(self, tag_names):
     ids = {}

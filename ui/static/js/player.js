@@ -3,7 +3,7 @@ $(document).ready(function() {
     $( "#song_details_template" ).hide();
 
     $(".moment-relative").each(function() {
-        $(this).text(moment($(this).text()).fromNow());
+        $(this).text(moment.utc($(this).text()).fromNow());
     });
 
     $('#audio').on('ended', function() {
