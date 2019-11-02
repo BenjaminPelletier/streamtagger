@@ -122,7 +122,7 @@ class SongDetails(object):
     if timestamp is None:
       self._id3.pop(SongDetails.TXXX_PREFIX + SongDetails.DESC_ADDED_AT, None)
     else:
-      frame = mutagen.id3.TXXX(desc=SongDetails.DESC_ADDED_AT, text=[timestamp.isoformat()])
+      frame = mutagen.id3.TXXX(desc=SongDetails.DESC_ADDED_AT, text=[timestamp.strftime('%Y-%m-%dT%H:%M:%S')])
       self._id3.add(frame)
 
   added_at = property(get_added_at, set_added_at)
@@ -156,16 +156,13 @@ class SongDetails(object):
     frame = self._id3.get(SongDetails.TXXX_PREFIX + SongDetails.DESC_TAGS)
     if frame is None:
       return tags.TagSet()
-    try:
-      return tags.TagSet(json_str=frame.text[0], tag_types={}) #TODO: include tag types
-    except ValueError:
-      # TODO: log warning
-      return tags.TagSet()
+    return tags.TagSet(json_str=frame.text[0]) #TODO: include tag types
 
   def set_tags(self, new_tags):
     assert isinstance(new_tags, tags.TagSet)
     if new_tags:
-      frame = mutagen.id3.TXXX(desc=SongDetails.DESC_TAGS, text=[new_tags.to_json()])
+      tag_text = new_tags.to_json()
+      frame = mutagen.id3.TXXX(desc=SongDetails.DESC_TAGS, text=[tag_text])
       self._id3.add(frame)
     else:
       self._id3.pop(SongDetails.TXXX_PREFIX + SongDetails.DESC_TAGS, None)

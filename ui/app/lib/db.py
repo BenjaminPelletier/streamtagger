@@ -248,6 +248,9 @@ class Transaction(object):
       tag_defs[row[1]] = tags.TagDefinition(id=row[0], name=row[1], type=row[2], created_by=row[3], created_at=row[4])
     return tag_defs
 
+  def get_tag_types(self):
+    return {tag_def.name: tag_def.type for tag_def in self.get_tag_definitions().values()}
+
   def create_tag_definition(self, name, tag_type, user_id):
     SQL_CREATE_TAG_DEFINITION = """
       INSERT INTO tag_definitions
@@ -259,7 +262,7 @@ class Transaction(object):
     row = self._cursor.fetchone()
     return row[0]
 
-  def set_tag(self, tag_def_id, song_id, user_id, value):
+  def set_label(self, tag_def_id, song_id, user_id, value):
     SQL_UPSERT_TAG = """
       INSERT INTO tags
       (tag_id, song_id, user_id, value, last_changed) VALUES (%s, %s, %s, %s, %s)
@@ -269,7 +272,7 @@ class Transaction(object):
     timestamp = datetime.datetime.utcnow().isoformat()
     self._cursor.execute(SQL_UPSERT_TAG, [tag_def_id, song_id, user_id, value, timestamp])
 
-  def clear_tag(self, tag_def_id, song_id, user_id):
+  def clear_label(self, tag_def_id, song_id, user_id):
     SQL_REMOVE_TAG = """
       DELETE FROM tags
       WHERE tag_id = %s AND song_id = %s AND user_id = %s;
@@ -279,25 +282,45 @@ class Transaction(object):
   def get_tags(self, song_id):
     users = self.get_users()
     SQL_SELECT_TAGS = """
-      SELECT tags.user_id, tags.type, tags.last_changed, tagdefs.name, tags.value
+      SELECT tags.user_id, tagdefs.type, tags.last_changed, tagdefs.name, tags.value
       FROM tags as tags
       JOIN tag_definitions as tagdefs ON tags.tag_id = tagdefs.id;
     """
-    tags_by_name = {}
+    tagset = tags.TagSet()
     self._cursor.execute(SQL_SELECT_TAGS, [song_id])
     for row in self._cursor.fetchall():
       user_id = row[0]
-      tag_type = row[1]
-      last_changed = datetime.datetime.strptime(row[2], '%Y-%m-%dT%H:%M:%S.%f')
+      last_changed = row[2]
       name = row[3]
       value = row[4]
-      if name in tags_by_name:
-        tag = tags_by_name[name]
+      if name in tagset:
+        tag = tagset[name]
       else:
-        tag = tags.Tag(name, tag_type)
-        tags_by_name[name] = tag
+        tag = tags.Tag(name)
+        tagset[name] = tag
       tag.add_label(users[user_id], value, last_changed)
-    return tags_by_name
+    return tagset
+
+  def synchronize_tags(self, song_id, tagset):
+    db_tagset = self.get_tags(song_id)
+    user_ids = {v: k for k, v in self.get_users().items()}
+    tagdef_ids = {tagdef.name: tagdef.id for tagdef in self.get_tag_definitions().values()}
+
+    # Add tags from tagset that aren't in db_tagset
+    for tag in tagset.values():
+      tagdef_id = tagdef_ids[tag.name]
+      db_tag = db_tagset.get(tag.name, tags.Tag(tag.name))
+      for label in tag.values():
+        if label.username not in db_tag or label.value != db_tag[label.username].value:
+          self.set_label(tagdef_id, song_id, user_ids[label.username], label.value)
+
+    # Remove tags from db_tagset that aren't in tagset
+    for db_tag in db_tagset.values():
+      tagdef_id = tagdef_ids[db_tag.name]
+      tag = tagset.get(db_tag.name, tags.Tag(db_tag.name))
+      for db_label in db_tag.values():
+        if db_label.username not in tag:
+          self.clear_label(tagdef_id, song_id, user_ids[db_label.username])
 
   def get_song_id(self, path):
     SQL_GET_SONG = """

@@ -1,3 +1,5 @@
+import re
+
 from .lib import db
 from .lib.flaskapp import app
 from .lib import jinja
@@ -27,6 +29,10 @@ def post_tags():
   except KeyError:
     return flask.jsonify({'status': 'error',
                           'message': 'Missing new_tag_name argument'}), 400
+  for c in new_tag_name:
+    if not re.search(r'[a-zA-Z0-9_.]', c):
+      return flask.jsonify({'status': 'error',
+                            'message': 'Invalid character in tag name: %s' % c}), 400
   try:
     new_tag_type = flask.request.form['new_tag_type']
   except KeyError:

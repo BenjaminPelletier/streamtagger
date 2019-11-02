@@ -36,7 +36,7 @@ def main(argv):
     tags = ('tag1', 'tag2')
     tagdef_ids = transaction.get_tag_ids(tags, user_id)
     for tagdef_id in tagdef_ids.values():
-      transaction.set_tag(tagdef_id, song_id_2, user_id, 1)
+      transaction.set_label(tagdef_id, song_id_2, user_id, 1)
     transaction.commit()
 
   # Add song with overlapping tags
@@ -45,25 +45,25 @@ def main(argv):
     tags = ('tag2', 'tag3')
     tagdef_ids = transaction.get_tag_ids(tags, user_id)
     for tagdef_id in tagdef_ids.values():
-      transaction.set_tag(tagdef_id, song_id_3, user_id, 1)
+      transaction.set_label(tagdef_id, song_id_3, user_id, 1)
     transaction.commit()
 
   # Add tag
   with db.transaction() as transaction:
     tagdef_id = transaction.get_tag_id('tag1', user_id)
-    transaction.set_tag(tagdef_id, song_id_1, user_id, 1)
+    transaction.set_label(tagdef_id, song_id_1, user_id, 1)
     transaction.commit()
 
   # Modify tag
   with db.transaction() as transaction:
     tagdef_id = transaction.get_tag_id('tag1', user_id)
-    transaction.set_tag(tagdef_id, song_id_2, user_id, -1)
+    transaction.set_label(tagdef_id, song_id_2, user_id, -1)
     transaction.commit()
 
   # Remove tag
   with db.transaction() as transaction:
     tagdef_id = transaction.get_tag_id('tag2', user_id)
-    transaction.clear_tag(tagdef_id, song_id_2, user_id)
+    transaction.clear_label(tagdef_id, song_id_2, user_id)
     transaction.commit()
 
   # Query songs
