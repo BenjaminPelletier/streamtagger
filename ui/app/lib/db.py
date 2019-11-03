@@ -357,12 +357,14 @@ class Transaction(object):
         song_id=row[0], title=row[1], artist=row[2], path=row[3], added_at=row[4], added_by=users.get(row[5])))
     return songs
 
-  def query_songs(self, query):
+  def query_songs(self, where_clause):
     SQL_SELECT_SONG_IDS = """
       SELECT songs.id
       FROM songs as songs
-      ORDER BY songs.added_at DESC;
+      ORDER BY songs.added_at DESC
     """
+    if where_clause:
+      SQL_SELECT_SONG_IDS += ' WHERE ' + where_clause
     self._cursor.execute(SQL_SELECT_SONG_IDS)
     song_ids = [row[0] for row in self._cursor.fetchall()]
     return self.get_songs_by_ids(song_ids)
