@@ -1,5 +1,7 @@
 package com.streamtagger.android_client
 
+import android.app.Activity
+import android.app.ProgressDialog.show
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
@@ -7,8 +9,20 @@ import android.view.Menu
 import android.view.MenuItem
 
 import kotlinx.android.synthetic.main.activity_main.*
+import android.content.Intent
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.os.AsyncTask
+import android.util.Log
+import androidx.annotation.UiThread
+
 
 class MainActivity : AppCompatActivity() {
+    val CODE_EDIT_SYNC = 8888
+
+    data class MusicSyncRequest(val localPath: String, val query: String)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,8 +30,8 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+            val i = Intent(this, SyncEditor::class.java)
+            startActivityForResult(i, CODE_EDIT_SYNC)
         }
     }
 
@@ -34,6 +48,36 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            CODE_EDIT_SYNC -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    val local_path = data!!.getStringExtra("local_path")!!
+                    val query = data.getStringExtra("query")!!
+                    synchronizeMusic(MusicSyncRequest(local_path, query)).execute()
+                }
+            }
+        }
+    }
+
+    class synchronizeMusic(val req: MusicSyncRequest) : AsyncTask<Void, Void, String>() {
+        override fun doInBackground(vararg params: Void?): String? {
+            Log.d("Streamtagger", "Background task executed with " + req.localPath + " -> " + req.query)
+            //TODO: query song list and sync
+            return null
+        }
+
+        override fun onPreExecute() {
+            super.onPreExecute()
+            // ...
+        }
+
+        override fun onPostExecute(result: String?) {
+            super.onPostExecute(result)
+            // ...
         }
     }
 }
