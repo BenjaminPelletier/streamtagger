@@ -104,3 +104,36 @@ table.song_details {
 input.song_details {
     width: 100%;
 }
+
+.face_unselected {
+    color: gray;
+}
+
+.editable_tag.face1_selected {
+    color: blue;
+    font-weight: bold;
+}
+
+.editable_tag.face2_selected {
+    color: cyan;
+    font-weight: bold;
+}
+
+.editable_tag.face3_selected {
+    color: green;
+    font-weight: bold;
+}
+
+.editable_tag.face4_selected {
+    color: yellow;
+    font-weight: bold;
+}
+
+.editable_tag.face5_selected {
+    color: red;
+    font-weight: bold;
+}
+
+.editable_tag:hover {
+    background-color: yellow;
+}

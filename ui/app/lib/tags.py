@@ -35,20 +35,20 @@ class TagSet(dict):
       self[tag_name] = tag
     tag.add_label(username, tag_value, last_changed)
 
-  def make_report(self, report_name):
-    if '@' in report_name:
-      username, tag_name = report_name.split('@')
-      if tag_name not in self:
+  def compute_report_value(self, report):
+    if report is None:
+      return None
+    if report.username:
+      if report.tag_name not in self:
         return None
-      tag = self[tag_name]
-      if username not in tag:
+      tag = self[report.tag_name]
+      if report.username not in tag:
         return None
-      return tag[username].value
+      return tag[report.username].value
     else:
-      tag_name = report_name
-      if tag_name not in self:
+      if report.tag_name not in self:
         return None
-      tag = self[tag_name]
+      tag = self[report.tag_name]
       n = 0
       value = 0
       for label in tag.values():
