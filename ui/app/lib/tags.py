@@ -3,7 +3,7 @@ import datetime
 import json
 
 
-TagDefinition = collections.namedtuple('TagDefinition', ('id', 'name', 'type', 'created_by', 'created_at'))
+TagDefinition = collections.namedtuple('TagDefinition', ('type', 'created_at', 'created_by'))
 
 
 class TagSet(dict):
@@ -26,6 +26,14 @@ class TagSet(dict):
         else:  # Assume TYPE_HASH
           label_entries.append(tag_name)
     return label_entries
+
+  def add_label(self, tag_name, tagdef, username, tag_value, last_changed):
+    if tag_name in self:
+      tag = self[tag_name]
+    else:
+      tag = Tag(tag_name, tagdef.type)
+      self[tag_name] = tag
+    tag.add_label(username, tag_value, last_changed)
 
   def set_user_label_entries(self, entries, username):
     changes = False

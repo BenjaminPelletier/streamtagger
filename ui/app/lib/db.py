@@ -2,6 +2,7 @@ import datetime
 import hashlib
 import os
 import threading
+import uuid
 
 from . import tags
 from .song import SongSummary
@@ -279,27 +280,48 @@ class Transaction(object):
     """
     self._cursor.execute(SQL_REMOVE_TAG, [tag_def_id, song_id, user_id])
 
-  def get_tags(self, song_id):
+  def get_tag_definitions(self):
+    SQL_GET_TAGDEFS = """
+      SELECT name, type, created_by, created_at
+      FROM tag_definitions;
+    """
+    users = self.get_users()
+    self._cursor.execute(SQL_GET_TAGDEFS)
+    tagdefs = {}
+    for row in self._cursor.fetchall():
+      name = row[0]
+      type = row[1]
+      created_by = users[row[2]]
+      created_at = row[3]
+      tagdefs[name] = tags.TagDefinition(type=type, created_by=created_by, created_at=created_at)
+    return tagdefs
+
+  def get_tags(self, song_ids):
     users = self.get_users()
     SQL_SELECT_TAGS = """
-      SELECT tags.user_id, tagdefs.type, tags.last_changed, tagdefs.name, tags.value
+      SELECT tags.song_id, tags.user_id, tagdefs.type, tags.last_changed, tagdefs.name, tags.value
       FROM tags as tags
-      JOIN tag_definitions as tagdefs ON tags.tag_id = tagdefs.id;
+      JOIN tag_definitions as tagdefs ON tags.tag_id = tagdefs.id
+      WHERE tags.song_id in (%s)
     """
-    tagset = tags.TagSet()
-    self._cursor.execute(SQL_SELECT_TAGS, [song_id])
+    tagdefs = self.get_tag_definitions()
+    tag_names = set()
+    song_id_list = ', '.join("'%s'" % id for id in song_ids)
+    query = SQL_SELECT_TAGS % song_id_list
+    self._cursor.execute(query)
+    tags_by_song = {}
     for row in self._cursor.fetchall():
-      user_id = row[0]
-      last_changed = row[2]
-      name = row[3]
-      value = row[4]
-      if name in tagset:
-        tag = tagset[name]
+      song_id, user_id, tag_type, last_changed, tag_name, tag_value = row
+      song_id = uuid.UUID(song_id)
+      username = users[user_id]
+      if song_id in tags_by_song:
+        tagset = tags_by_song[song_id]
       else:
-        tag = tags.Tag(name)
-        tagset[name] = tag
-      tag.add_label(users[user_id], value, last_changed)
-    return tagset
+        tagset = tags.TagSet()
+        tags_by_song[song_id] = tagset
+      tagset.add_label(tag_name, tagdefs[tag_name], username, tag_value, last_changed)
+      tag_names.add(tag_name)
+    return tags_by_song, tag_names
 
   def synchronize_tags(self, song_id, tagset):
     db_tagset = self.get_tags(song_id)

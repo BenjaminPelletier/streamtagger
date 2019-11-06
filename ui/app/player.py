@@ -6,8 +6,13 @@ from . import sessions
 
 import flask
 
-def make_table(songs, users):
-  header = ('Title', 'Artist', 'Added')
+def make_table(songs, username, tagsets=None, tag_names=None):
+  if not tagsets:
+    tagsets = {}
+  if not tag_names:
+    tag_names = []
+  header = ['Title', 'Artist', 'Added']
+  header.extend(tag_names)
   song_rows = []
   song_ids = [song.song_id for song in songs]
   song_paths = ['/media/' + song.path for song in songs]
@@ -16,13 +21,22 @@ def make_table(songs, users):
     cols.append(('col_title', song.title if song.title else ''))
     cols.append(('col_artist', song.artist if song.artist else ''))
     cols.append(('moment-relative', song.added_at))
+    tagset = tagsets.get(song.song_id)
+    if tagset:
+      for tag_name in tag_names:
+        tag = tagset.get(tag_name)
+        label = tag.get(username) if tag else None
+        value = label.value if label else None
+        cols.append(str(value))
+    else:
+      cols.extend([''] * len(tag_names))
     song_rows.append(cols)
   table_template = jinja.env.get_template('song_table.html')
   return table_template.render(header=header, song_rows=song_rows, song_ids=song_ids, song_paths=song_paths)
 
 
-def render_player(songs, users, username):
-  table_html = make_table(songs, users)
+def render_player(songs, users, username, tagsets=None, tag_names=None):
+  table_html = make_table(songs, username, tagsets, tag_names)
   player = jinja.env.get_template('player.html')
   return player.render(initial_song_table=table_html, username=username)
 
@@ -36,4 +50,5 @@ def index():
     users = transaction.get_users()
     username = users[user_id]
     songs = transaction.query_songs('')
-  return render_player(songs, users, username)
+    tagsets, tag_names = transaction.get_tags([song.song_id for song in songs])
+  return render_player(songs, users, username, tagsets, tag_names)
