@@ -3,7 +3,7 @@ import datetime
 import json
 
 
-TagDefinition = collections.namedtuple('TagDefinition', ('type', 'created_at', 'created_by'))
+TagDefinition = collections.namedtuple('TagDefinition', ('id', 'name', 'type', 'created_at', 'created_by'))
 
 
 class TagSet(dict):
@@ -114,9 +114,10 @@ class Tag(dict):
   TYPE_FACES = 'faces'
   TYPES = {TYPE_HASH, TYPE_THUMBS_UP_DOWN, TYPE_STARS, TYPE_FACES}
 
-  def __init__(self, name):
+  def __init__(self, name, type=None):
     super(Tag, self).__init__()
     self.name = name
+    self.type = type
 
   def add_label(self, username, value, last_changed=None):
     if not last_changed:

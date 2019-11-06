@@ -280,22 +280,6 @@ class Transaction(object):
     """
     self._cursor.execute(SQL_REMOVE_TAG, [tag_def_id, song_id, user_id])
 
-  def get_tag_definitions(self):
-    SQL_GET_TAGDEFS = """
-      SELECT name, type, created_by, created_at
-      FROM tag_definitions;
-    """
-    users = self.get_users()
-    self._cursor.execute(SQL_GET_TAGDEFS)
-    tagdefs = {}
-    for row in self._cursor.fetchall():
-      name = row[0]
-      type = row[1]
-      created_by = users[row[2]]
-      created_at = row[3]
-      tagdefs[name] = tags.TagDefinition(type=type, created_by=created_by, created_at=created_at)
-    return tagdefs
-
   def get_tags(self, song_ids):
     users = self.get_users()
     SQL_SELECT_TAGS = """
