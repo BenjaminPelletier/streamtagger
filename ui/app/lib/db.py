@@ -308,7 +308,8 @@ class Transaction(object):
     return tags_by_song, tag_names
 
   def synchronize_tags(self, song_id, tagset):
-    db_tagset = self.get_tags(song_id)
+    tagsets_by_song, tag_names = self.get_tags([song_id])
+    db_tagset = tagsets_by_song[uuid.UUID(song_id)]
     user_ids = {v: k for k, v in self.get_users().items()}
     tagdef_ids = {tagdef.name: tagdef.id for tagdef in self.get_tag_definitions().values()}
 
