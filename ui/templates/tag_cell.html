@@ -1,9 +1,28 @@
 {% if tag_type == 'faces' %}
 <div class="tag_value_container" data-tag_name="{{ tag_name }}" data-report_name="{{ report_name }}">
-    <span class="{{ icon_class[0] }}" data-value="1">&#x1F61E;</span>
-    <span class="{{ icon_class[1] }}" data-value="2">&#x1F615;</span>
-    <span class="{{ icon_class[2] }}" data-value="3">&#x1F610;</span>
-    <span class="{{ icon_class[3] }}" data-value="4">&#x1F603;</span>
-    <span class="{{ icon_class[4] }}" data-value="5">&#x1F60D;</span>
+    {% set base_class = 'editable_tag ' if editable else '' %}
+    {% if tag_value is not none %}
+        {% if tag_value < 1.5 %}
+            {% set tag_code = 1 %}
+        {% elif tag_value < 2.5 %}
+            {% set tag_code = 2 %}
+        {% elif tag_value < 3.5 %}
+            {% set tag_code = 3 %}
+        {% elif tag_value < 4.5 %}
+            {% set tag_code = 4 %}
+        {% else %}
+            {% set tag_code = 5 %}
+        {% endif %}
+    {% else %}
+        {% set tag_code = 0 %}
+    {% endif %}
+    <span class="{{ base_class }}{{ 'face1_selected' if tag_code == 1 else 'face_unselected' }}" data-value="1">&#x1F61E;</span>
+    <span class="{{ base_class }}{{ 'face2_selected' if tag_code == 2 else 'face_unselected' }}" data-value="2">&#x1F612;</span>
+    <span class="{{ base_class }}{{ 'face3_selected' if tag_code == 3 else 'face_unselected' }}" data-value="3">&#x1F610;</span>
+    <span class="{{ base_class }}{{ 'face4_selected' if tag_code == 4 else 'face_unselected' }}" data-value="4">&#x1F60A;</span>
+    <span class="{{ base_class }}{{ 'face5_selected' if tag_code == 5 else 'face_unselected' }}" data-value="5">&#x1F603;</span>
+    {% if editable and tag_value is not none %}
+        <span class="{{ base_class }}remove_tag" data-value="None">&#10008;</span>
+    {% endif %}
 </div>
 {% endif %}

@@ -13,22 +13,9 @@ Report = collections.namedtuple('Report', ('name', 'tag_name', 'username', 'tag_
 
 def make_tag_cell(report, value, username):
   editable = report.username is None or report.username == username
-  if value is None:
-    if editable:
-      icon_class = ['editable_tag face_unselected'] * 5
-    else:
-      # This is a report of someone else's value of a tag; user can't edit
-      return ''
-  else:
-    if report.tag_type == 'faces':
-      tag_class = 'editable_tag ' if editable else ''
-      icon_class = [(tag_class + ('face%d_selected' % i if t0 <= value < t1 else 'face_unselected'))
-                    for t0, t1, i in ((1, 1.5, 1), (1.5, 2.5, 2), (2.5, 3.5, 3), (3.5, 4.5, 4), (4.5, 5.0001, 5))]
-    else:
-      icon_class = None
   tag_cell_template = jinja.env.get_template('tag_cell.html')
   return tag_cell_template.render(
-    tag_type=report.tag_type, icon_class=icon_class, tag_name=report.tag_name, report_name=report.name)
+    tag_type=report.tag_type, tag_name=report.tag_name, tag_value=value, editable=editable, report_name=report.name)
 
 
 def make_table(songs, username, tagsets=None, reports=None):

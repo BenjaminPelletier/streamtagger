@@ -64,7 +64,11 @@ def post_tags():
 def post_tag(song_id, tag_name):
   song_id = uuid.UUID(song_id)
   try:
-    tag_value = int(flask.request.form['tag_value']) #TODO: consider changing to double
+    tag_value = flask.request.form['tag_value']
+    if tag_value == 'None':
+      tag_value = None
+    else:
+      tag_value = int(tag_value)  #TODO: consider changing to double
   except KeyError:
     return flask.jsonify({'status': 'error',
                           'message': 'Missing tag_value argument'}), 400
@@ -80,10 +84,19 @@ def post_tag(song_id, tag_name):
       return flask.redirect('/login')
     users = transaction.get_users()
     username = users[user_id]
+
     tagset = transaction.get_tags_for_song(song_id)
-    if tag_name not in tagset or username not in tagset[tag_name] or tagset[tag_name][username].value != tag_value:
-      tagdefs = transaction.get_tag_definitions()
-      transaction.set_label(tagdefs[tag_name].id, song_id, user_id, tag_value)
+    tagdefs = transaction.get_tag_definitions()
+    changes = False
+    if tag_value is not None:
+      if tag_name not in tagset or username not in tagset[tag_name] or tagset[tag_name][username].value != tag_value:
+        transaction.set_label(tagdefs[tag_name].id, song_id, user_id, tag_value)
+        changes = True
+    else:
+      if tag_name in tagset and username in tagset[tag_name]:
+        transaction.clear_label(tagdefs[tag_name].id, song_id, user_id)
+        changes = True
+    if changes:
       report = player.parse_reports(report_name, transaction)[0]
       tag_cell_html = player.make_tag_cell(report, tag_value, username)
       transaction.commit()

@@ -129,13 +129,17 @@ input.song_details {
 }
 
 .editable_tag.face4_selected {
-    color: yellow;
+    color: orange;
     font-weight: bold;
 }
 
 .editable_tag.face5_selected {
     color: red;
     font-weight: bold;
+}
+
+.remove_tag {
+    color: black;
 }
 
 .editable_tag:hover {

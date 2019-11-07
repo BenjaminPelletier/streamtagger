@@ -278,7 +278,7 @@ class Transaction(object):
       DELETE FROM tags
       WHERE tag_id = %s AND song_id = %s AND user_id = %s;
     """
-    self._cursor.execute(SQL_REMOVE_TAG, [tag_def_id, song_id, user_id])
+    self._cursor.execute(SQL_REMOVE_TAG, [str(tag_def_id), str(song_id), str(user_id)])
 
   def get_tags(self, song_ids):
     users = self.get_users()
