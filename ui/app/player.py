@@ -27,7 +27,8 @@ def make_tag_cell(report, value, username):
     else:
       icon_class = None
   tag_cell_template = jinja.env.get_template('tag_cell.html')
-  return tag_cell_template.render(tag_type=report.tag_type, icon_class=icon_class)
+  return tag_cell_template.render(
+    tag_type=report.tag_type, icon_class=icon_class, tag_name=report.tag_name, report_name=report.name)
 
 
 def make_table(songs, username, tagsets=None, reports=None):

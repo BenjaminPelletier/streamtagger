@@ -1,7 +1,9 @@
 {% if tag_type == 'faces' %}
-    <span class="{{ icon_class[0] }}">&#x1F61E;</span>
-    <span class="{{ icon_class[1] }}">&#x1F615;</span>
-    <span class="{{ icon_class[2] }}">&#x1F610;</span>
-    <span class="{{ icon_class[3] }}">&#x1F603;</span>
-    <span class="{{ icon_class[4] }}">&#x1F60D;</span>
+<div class="tag_value_container" data-tag_name="{{ tag_name }}" data-report_name="{{ report_name }}">
+    <span class="{{ icon_class[0] }}" data-value="1">&#x1F61E;</span>
+    <span class="{{ icon_class[1] }}" data-value="2">&#x1F615;</span>
+    <span class="{{ icon_class[2] }}" data-value="3">&#x1F610;</span>
+    <span class="{{ icon_class[3] }}" data-value="4">&#x1F603;</span>
+    <span class="{{ icon_class[4] }}" data-value="5">&#x1F60D;</span>
+</div>
 {% endif %}

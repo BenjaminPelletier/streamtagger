@@ -122,7 +122,9 @@ class Tag(dict):
   def add_label(self, username, value, last_changed=None):
     if not last_changed:
       last_changed = datetime.datetime.utcnow()
-    self[username] = Label(username, value, last_changed)
+    label = Label(username, value, last_changed)
+    self[username] = label
+    return label
 
   def to_json_dict(self):
     return {label.username: label.to_json_dict() for label in self.values()}

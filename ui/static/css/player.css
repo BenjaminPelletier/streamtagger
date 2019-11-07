@@ -105,6 +105,10 @@ input.song_details {
     width: 100%;
 }
 
+.editable_tag {
+    cursor: pointer;
+}
+
 .face_unselected {
     color: gray;
 }

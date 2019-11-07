@@ -271,7 +271,7 @@ class Transaction(object):
       UPDATE SET (value, last_changed) = (EXCLUDED.value, EXCLUDED.last_changed);
     """
     timestamp = datetime.datetime.utcnow().isoformat()
-    self._cursor.execute(SQL_UPSERT_TAG, [tag_def_id, song_id, user_id, value, timestamp])
+    self._cursor.execute(SQL_UPSERT_TAG, [str(tag_def_id), str(song_id), str(user_id), value, timestamp])
 
   def clear_label(self, tag_def_id, song_id, user_id):
     SQL_REMOVE_TAG = """
@@ -306,6 +306,12 @@ class Transaction(object):
       tagset.add_label(tag_name, tagdefs[tag_name], username, tag_value, last_changed)
       tag_names.add(tag_name)
     return tags_by_song, tag_names
+
+  def get_tags_for_song(self, song_id):
+    if not isinstance(song_id, uuid.UUID):
+      song_id = uuid.UUID(song_id)
+    tags_by_song, tag_names = self.get_tags([song_id])
+    return tags_by_song.get(song_id, tags.TagSet())
 
   def synchronize_tags(self, song_id, tagset):
     tagsets_by_song, tag_names = self.get_tags([song_id])

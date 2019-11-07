@@ -1,9 +1,11 @@
 import re
+import uuid
 
 from .lib import db
 from .lib.flaskapp import app
 from .lib import jinja
 from .lib import tags
+from . import player
 from . import sessions
 
 import flask
@@ -56,3 +58,38 @@ def post_tags():
     transaction.commit()
 
   return flask.jsonify({'status': 'success', 'tag_def_id': str(tag_def_id)}), 200
+
+
+@app.route('/songs/<song_id>/tags/<tag_name>', methods=['POST'])
+def post_tag(song_id, tag_name):
+  song_id = uuid.UUID(song_id)
+  try:
+    tag_value = int(flask.request.form['tag_value']) #TODO: consider changing to double
+  except KeyError:
+    return flask.jsonify({'status': 'error',
+                          'message': 'Missing tag_value argument'}), 400
+  try:
+    report_name = flask.request.form['report_name']
+  except KeyError:
+    return flask.jsonify({'status': 'error',
+                          'message': 'Missing report_name argument'}), 400
+
+  with db.transaction() as transaction:
+    user_id, session_id = sessions.get_session(transaction)
+    if user_id is None:
+      return flask.redirect('/login')
+    users = transaction.get_users()
+    username = users[user_id]
+    tagset = transaction.get_tags_for_song(song_id)
+    if tag_name not in tagset or username not in tagset[tag_name] or tagset[tag_name][username].value != tag_value:
+      tagdefs = transaction.get_tag_definitions()
+      transaction.set_label(tagdefs[tag_name].id, song_id, user_id, tag_value)
+      report = player.parse_reports(report_name, transaction)[0]
+      tag_cell_html = player.make_tag_cell(report, tag_value, username)
+      transaction.commit()
+      # TODO: also commit tag change into MP3 file
+      return flask.jsonify({'status': 'success',
+                            'data_changed': True,
+                            'tag_cell_html': tag_cell_html}), 200
+
+  return flask.jsonify({'status': 'success', 'data_changed': False}), 200

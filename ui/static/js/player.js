@@ -15,6 +15,8 @@ $(document).ready(function() {
     	    fileList.push(fileInput.files[i]);
         }
     });
+
+    $('.editable_tag').click(click_set_tag);
 } );
 
 var playing_song_id = null;
@@ -161,4 +163,25 @@ function toggle_song_details(song_id, columns) {
             $newrow.insertAfter(get_song_row_by_id(song_id)[0]);
           });
     }
+}
+
+function click_set_tag(event) {
+    var tag_value = $(event.target).attr('data-value');
+    var $tag_container = $(event.target).closest('.tag_value_container');
+    var tag_name = $tag_container.attr('data-tag_name');
+    var report_name = $tag_container.attr('data-report_name');
+    var song_id = $tag_container.closest('tr').attr('data-songid');
+    var $tag_cell = $tag_container.closest('td');
+    $.post('/songs/' + song_id + '/tags/' + tag_name, { tag_value: tag_value, report_name: report_name})
+    .done(function( data ) {
+        // Tag value updated successfully
+        if (data['data_changed']) {
+            $tag_cell.html(data['tag_cell_html'])
+            $tag_cell.find('.editable_tag').click(click_set_tag);
+        }
+    })
+    .fail(function(jqXHR, textStatus, error) {
+        // Failed to update tag value
+        alert('Error updating tag value: ' + error + '\n' + jqXHR.responseText);
+    });
 }
