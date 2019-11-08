@@ -9,6 +9,27 @@ td {
 
 th {
     text-align: left;
+    vertical-align: bottom;
+}
+
+th.rotate {
+  height: 140px;
+  white-space: nowrap;
+  text-align: right;
+  vertical-align: inherit;
+}
+
+th.rotate > div {
+  display: inline-block;
+  transform:
+    translate(18px, 51px)
+    rotate(315deg);
+  width: 30px;
+}
+
+th.rotate > div > span {
+  border-bottom: 1px solid #ccc;
+  padding: 5px 10px;
 }
 
 .song_button {

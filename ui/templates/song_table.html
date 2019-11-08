@@ -3,7 +3,11 @@
         <tr>
             <th></th>
             {% for col in header %}
+            {% if col is string %}
             <th>{{ col }}</th>
+            {% else %}
+            <th class="rotate"><div><span>{{ col[1] }}</span></div></th>
+            {% endif %}
             {% endfor %}
             <th></th>
         </tr>

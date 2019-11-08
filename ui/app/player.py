@@ -24,7 +24,7 @@ def make_table(songs, username, tagsets=None, reports=None):
   if not reports:
     reports = []
   header = ['Title', 'Artist', 'Added']
-  header.extend(r.name for r in reports)
+  header.extend(('tag_header', r.name) for r in reports)
   song_rows = []
   song_ids = [song.song_id for song in songs]
   song_paths = ['/media/' + song.path for song in songs]
