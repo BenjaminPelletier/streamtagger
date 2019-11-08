@@ -27,13 +27,21 @@ class TagSet(dict):
           label_entries.append(tag_name)
     return label_entries
 
-  def add_label(self, tag_name, tagdef, username, tag_value, last_changed):
+  def add_label(self, tag_name, tagdef, username, tag_value, last_changed=None):
+    if last_changed is None:
+      last_changed = datetime.datetime.utcnow()
     if tag_name in self:
       tag = self[tag_name]
     else:
       tag = Tag(tag_name, tagdef.type)
       self[tag_name] = tag
     tag.add_label(username, tag_value, last_changed)
+
+  def clear_label(self, tag_name, username):
+    if tag_name in self and username in self[tag_name]:
+      del self[tag_name][username]
+      if not self[tag_name]:
+        del self[tag_name]
 
   def compute_report_value(self, report):
     if report is None:

@@ -1,3 +1,5 @@
+import os
+
 from .lib import config
 from .lib import db
 from .lib.flaskapp import app
@@ -23,4 +25,4 @@ def media(path):
     if user_id is None:
       return flask.jsonify({'message': 'You must be logged in to access media'}), 401
 
-  return flask.send_file(config.media_path + path, mimetype='audio/mpeg')
+  return flask.send_file(os.path.join(config.media_path, path), mimetype='audio/mpeg')

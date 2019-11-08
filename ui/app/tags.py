@@ -1,9 +1,12 @@
+import os
 import re
 import uuid
 
+from .lib import config
 from .lib import db
 from .lib.flaskapp import app
 from .lib import jinja
+from .lib import song
 from .lib import tags
 from . import player
 from . import sessions
@@ -90,17 +93,22 @@ def post_tag(song_id, tag_name):
     changes = False
     if tag_value is not None:
       if tag_name not in tagset or username not in tagset[tag_name] or tagset[tag_name][username].value != tag_value:
+        tagset.add_label(tag_name, tagdefs[tag_name], username, tag_value)
         transaction.set_label(tagdefs[tag_name].id, song_id, user_id, tag_value)
         changes = True
     else:
       if tag_name in tagset and username in tagset[tag_name]:
+        tagset.clear_label(tag_name, username)
         transaction.clear_label(tagdefs[tag_name].id, song_id, user_id)
         changes = True
     if changes:
       report = player.parse_reports(report_name, transaction)[0]
       tag_cell_html = player.make_tag_cell(report, tag_value, username)
+      summary = transaction.get_song_by_id(song_id)
+      song_details = song.SongDetails(os.path.join(config.media_path, summary.path))
+      song_details.tags = tagset
+      song_details.save()
       transaction.commit()
-      # TODO: also commit tag change into MP3 file
       return flask.jsonify({'status': 'success',
                             'data_changed': True,
                             'tag_cell_html': tag_cell_html}), 200
