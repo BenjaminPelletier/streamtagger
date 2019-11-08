@@ -7,7 +7,7 @@ from . import sessions
 import flask
 
 
-@app.route('/users/<username>', methods=['GET', 'POST'])
+@app.route('/users/<username>', methods=['POST'])
 def post_user(username):
   with db.transaction() as transaction:
     user_id, session_id = sessions.get_session(transaction)
@@ -29,7 +29,7 @@ def post_user(username):
   return flask.jsonify({'status': 'success', 'user_id': user_id})
 
 
-@app.route('/users/<username>', methods=['GET', 'POST'])
+@app.route('/users/<username>', methods=['GET'])
 def get_user(username):
   with db.transaction() as transaction:
     user_id, session_id = sessions.get_session(transaction)
