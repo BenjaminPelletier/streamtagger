@@ -114,3 +114,10 @@ def post_tag(song_id, tag_name):
                             'tag_cell_html': tag_cell_html}), 200
 
   return flask.jsonify({'status': 'success', 'data_changed': False}), 200
+
+# Tag colors
+# 1b1b5b
+# 5d29b0
+# d63a49
+# e58603
+# e5d14b

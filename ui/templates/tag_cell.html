@@ -1,6 +1,5 @@
 {% if tag_type == 'faces' %}
 <div class="tag_value_container" data-tag_name="{{ tag_name }}" data-report_name="{{ report_name }}">
-    {% set base_class = 'editable_tag ' if editable else '' %}
     {% if tag_value is not none %}
         {% if tag_value < 1.5 %}
             {% set tag_code = 1 %}
@@ -16,13 +15,21 @@
     {% else %}
         {% set tag_code = 0 %}
     {% endif %}
-    <span class="{{ base_class }}{{ 'face1_selected' if tag_code == 1 else 'face_unselected' }}" data-value="1">&#x1F61E;</span>
-    <span class="{{ base_class }}{{ 'face2_selected' if tag_code == 2 else 'face_unselected' }}" data-value="2">&#x1F612;</span>
-    <span class="{{ base_class }}{{ 'face3_selected' if tag_code == 3 else 'face_unselected' }}" data-value="3">&#x1F610;</span>
-    <span class="{{ base_class }}{{ 'face4_selected' if tag_code == 4 else 'face_unselected' }}" data-value="4">&#x1F60A;</span>
-    <span class="{{ base_class }}{{ 'face5_selected' if tag_code == 5 else 'face_unselected' }}" data-value="5">&#x1F603;</span>
-    {% if editable and tag_value is not none %}
-        <span class="{{ base_class }}remove_tag" data-value="None">&#10008;</span>
+    {% if editable %}
+        <div class="editable_tag face_tag {{ 'face1_selected' if tag_code == 1 else 'face1_unselected' }}" data-value="1">
+        </div><div class="editable_tag face_tag {{ 'face2_selected' if tag_code == 2 else 'face2_unselected' }}" data-value="2">
+        </div><div class="editable_tag face_tag {{ 'face3_selected' if tag_code == 3 else 'face3_unselected' }}" data-value="3">
+        </div><div class="editable_tag face_tag {{ 'face4_selected' if tag_code == 4 else 'face4_unselected' }}" data-value="4">
+        </div><div class="editable_tag face_tag {{ 'face5_selected' if tag_code == 5 else 'face5_unselected' }}" data-value="5">
+        {% if tag_value is not none %}
+            </div><div class="editable_tag remove_tag" data-value="None">&#10008;</div>
+        {% else %}
+            </div>
+        {% endif %}
+    {% else %}
+        {% if tag_value is not none %}
+            <div class="face_tag face{{ tag_code }}_selected"></div>
+        {% endif %}
     {% endif %}
 </div>
 {% endif %}

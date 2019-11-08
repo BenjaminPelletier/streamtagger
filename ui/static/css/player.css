@@ -109,37 +109,61 @@ input.song_details {
     cursor: pointer;
 }
 
-.face_unselected {
-    color: gray;
+.face_tag {
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
 }
 
-.editable_tag.face1_selected {
-    color: blue;
-    font-weight: bold;
+.face1_selected {
+    background: url('/static/img/face1_selected.png');
 }
 
-.editable_tag.face2_selected {
-    color: cyan;
-    font-weight: bold;
+.face2_selected {
+    background: url('/static/img/face2_selected.png');
 }
 
-.editable_tag.face3_selected {
-    color: green;
-    font-weight: bold;
+.face3_selected {
+    background: url('/static/img/face3_selected.png');
 }
 
-.editable_tag.face4_selected {
-    color: orange;
-    font-weight: bold;
+.face4_selected {
+    background: url('/static/img/face4_selected.png');
 }
 
-.editable_tag.face5_selected {
-    color: red;
-    font-weight: bold;
+.face5_selected {
+    background: url('/static/img/face5_selected.png');
+}
+
+.face1_unselected {
+    background: url('/static/img/face1_unselected.png');
+}
+
+.face2_unselected {
+    background: url('/static/img/face2_unselected.png');
+}
+
+.face3_unselected {
+    background: url('/static/img/face3_unselected.png');
+}
+
+.face4_unselected {
+    background: url('/static/img/face4_unselected.png');
+}
+
+.face5_unselected {
+    background: url('/static/img/face5_unselected.png');
 }
 
 .remove_tag {
     color: black;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
 }
 
 .editable_tag:hover {
