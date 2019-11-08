@@ -104,10 +104,10 @@ def post_tag(song_id, tag_name):
     if changes:
       report = player.parse_reports(report_name, transaction)[0]
       tag_cell_html = player.make_tag_cell(report, tag_value, username)
-      summary = transaction.get_song_by_id(song_id)
-      song_details = song.SongDetails(os.path.join(config.media_path, summary.path))
-      song_details.tags = tagset
-      song_details.save()
+      #summary = transaction.get_song_by_id(song_id)
+      #song_details = song.SongDetails(os.path.join(config.media_path, summary.path))
+      #song_details.tags = tagset
+      #song_details.save()
       transaction.commit()
       return flask.jsonify({'status': 'success',
                             'data_changed': True,
