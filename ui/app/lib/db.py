@@ -373,16 +373,31 @@ class Transaction(object):
   def get_song_by_id(self, song_id):
     return self.get_songs_by_ids([song_id])[0]
 
-  def query_songs(self, where_clause):
-    SQL_SELECT_SONG_IDS = """
-      SELECT songs.id
-      FROM songs as songs
-      ORDER BY songs.added_at DESC
-    """
-    if where_clause:
-      SQL_SELECT_SONG_IDS += ' WHERE ' + where_clause
-    self._cursor.execute(SQL_SELECT_SONG_IDS)
-    song_ids = [row[0] for row in self._cursor.fetchall()]
+  def query_songs(self, where_clauses):
+    if where_clauses:
+      song_ids = None
+      for where_clause in where_clauses:
+        SQL_SELECT_SONG_IDS = """
+          SELECT songs.id
+          FROM songs as songs
+          JOIN tags ON tags.song_id = songs.id
+          WHERE %s
+          ORDER BY songs.added_at DESC
+        """ % where_clause
+        self._cursor.execute(SQL_SELECT_SONG_IDS)
+        new_ids = set(row[0] for row in self._cursor.fetchall())
+        if song_ids:
+          song_ids = song_ids.intersection(new_ids)
+        else:
+          song_ids = set(new_ids)
+    else:
+      SQL_SELECT_SONG_IDS = """
+        SELECT songs.id
+        FROM songs as songs
+        ORDER BY songs.added_at DESC
+      """
+      self._cursor.execute(SQL_SELECT_SONG_IDS)
+      song_ids = set(row[0] for row in self._cursor.fetchall())
     return self.get_songs_by_ids(song_ids)
 
   def find_songs_by_artist_title(self, artist, title):

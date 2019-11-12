@@ -70,7 +70,39 @@ def index():
       return flask.redirect('/login')
     users = transaction.get_users()
     username = users[user_id]
-    songs = transaction.query_songs('')
+
+    tagreqs = flask.request.args.getlist('hastag')
+    if tagreqs:
+      tagdefs = transaction.get_tag_definitions()
+      userids_by_name = {v: k for k, v in users.items()}
+      where_clauses = []
+      for tagreq in tagreqs:
+        tagexprs = tagreq.split('|')
+        or_clauses = []
+        for tagexpr in tagexprs:
+          if '=' in tagexpr:
+            tagexpr, tagvalue = tagexpr.split('=')
+            tagvalue = int(tagvalue)
+          else:
+            tagvalue = None
+          if '@' in tagexpr:
+            username, tagname = tagexpr.split('@')
+          else:
+            username, tagname = None, tagexpr
+          or_clause = 'tags.tag_id = \'%s\'' % tagdefs[tagname].id
+          if username:
+            or_clause += ' AND tags.user_id = \'%s\'' % userids_by_name[username]
+          if tagvalue:
+            or_clause += ' AND tags.value = %d' % tagvalue
+          or_clauses.append('(' + or_clause + ')')
+        if len(or_clauses) > 1:
+          where_clauses.append('(' + ' OR '.join(or_clauses) + ')')
+        else:
+          where_clauses.append(or_clauses[0])
+    else:
+      where_clauses = None
+
+    songs = transaction.query_songs(where_clauses)
     tagsets, tag_names = transaction.get_tags([song.song_id for song in songs])
     reports = parse_reports(flask.request.args.get('show'), transaction)
   return render_player(songs, users, username, tagsets, reports)
