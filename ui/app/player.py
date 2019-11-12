@@ -86,12 +86,12 @@ def index():
           else:
             tagvalue = None
           if '@' in tagexpr:
-            username, tagname = tagexpr.split('@')
+            tagusername, tagname = tagexpr.split('@')
           else:
-            username, tagname = None, tagexpr
+            tagusername, tagname = None, tagexpr
           or_clause = 'tags.tag_id = \'%s\'' % tagdefs[tagname].id
-          if username:
-            or_clause += ' AND tags.user_id = \'%s\'' % userids_by_name[username]
+          if tagusername:
+            or_clause += ' AND tags.user_id = \'%s\'' % userids_by_name[tagusername]
           if tagvalue:
             or_clause += ' AND tags.value = %d' % tagvalue
           or_clauses.append('(' + or_clause + ')')
