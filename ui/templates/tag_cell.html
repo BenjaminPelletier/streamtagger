@@ -32,4 +32,19 @@
         {% endif %}
     {% endif %}
 </div>
+{% elif tag_type == 'hashtag' %}
+<div class="tag_value_container" data-tag_name="{{ tag_name }}" data-report_name="{{ report_name }}">
+    {% if editable %}
+        <div class="editable_tag hash_tag_{{ 'unselected' if tag_value is none else 'selected' }}" data-value="1">&#10003;
+        {% if tag_value is not none %}
+            </div><div class="editable_tag remove_tag" data-value="None">&#10008;</div>
+        {% else %}
+            </div>
+        {% endif %}
+    {% else %}
+        {% if tag_value is not none %}
+            <div class="hash_tag_selected">&#10003;</div>
+        {% endif %}
+    {% endif %}
+</div>
 {% endif %}

@@ -178,6 +178,19 @@ input.song_details {
     background: url('/static/img/face5_unselected.png');
 }
 
+.hash_tag_selected {
+    color: black;
+    font-weight: bold;
+}
+
+.hash_tag_unselected {
+    color: gray;
+}
+
+.hash_tag_unselected:hover {
+    color: black;
+}
+
 .remove_tag {
     color: black;
     width: 20px;
