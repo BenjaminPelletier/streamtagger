@@ -67,7 +67,7 @@ def index():
   with db.transaction() as transaction:
     user_id, session_id = sessions.get_session(transaction)
     if user_id is None:
-      return flask.redirect('/login')
+      return flask.redirect(flask.url_for('login', **flask.request.args))
     users = transaction.get_users()
     username = users[user_id]
 

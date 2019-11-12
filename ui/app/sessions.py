@@ -31,7 +31,7 @@ def login_get():
     user_id, session_id = get_session(transaction)
     if user_id:
       # User already logged in with valid session
-      return flask.redirect('/')
+      return flask.redirect(flask.url_for('index', **flask.request.args))
 
   template = jinja.env.get_template('login.html')
   return template.render()
@@ -60,7 +60,7 @@ def login_post():
 
   resp = flask.make_response(flask.jsonify({
     'success': True,
-    'redirect': '/'
+    'redirect': flask.url_for('index', **flask.request.args)
   }))
   resp.set_cookie(SESSION_KEY, session_id)
   return resp

@@ -13,7 +13,7 @@ function login() {
         $('input[type="password"]').css("box-shadow","0 0 3px red");
         alert("Please provide a password.");
     } else {
-        $.post("login", { username: username, password_hash: sha1(salt + username + password + salt + username) }, function(response) {
+        $.post(document.location.search, { username: username, password_hash: sha1(salt + username + password + salt + username) }, function(response) {
             if (response.success) {
                 window.location.href = response.redirect;
             } else {
