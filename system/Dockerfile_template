@@ -3,10 +3,12 @@ FROM ${base_image_name}
 WORKDIR /usr/src/app
 
 RUN apt-get update && \
-    pip install flask gunicorn jinja2 psycopg2 mutagen
+    apt-get -y install ffmpeg
+
+RUN pip install flask gunicorn jinja2 psycopg2 mutagen
 
 COPY . .
 
-CMD gunicorn streamtagger:app -b 0.0.0.0:5000 --access-logfile -
+CMD gunicorn streamtagger:app -b 0.0.0.0:5000 --timeout=120 --access-logfile -
 
 EXPOSE 5000

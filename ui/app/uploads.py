@@ -1,5 +1,7 @@
 import datetime
 import os
+import subprocess
+import uuid
 
 from .lib import config
 from .lib import db
@@ -45,20 +47,39 @@ def post_upload():
   file = next(flask.request.files.values())
   if is_unsafe_filename(file.filename):
     return upload_error('Illegal characters in filename')
-  if file.filename[-4:].lower() != '.mp3':
-    return upload_error('Only .mp3 files may be uploaded')
-  if file.content_type != 'audio/mp3':
-    return upload_error('Only mp3 content may be uploaded')
+  extension = file.filename[-4:].lower()
+  approved_extensions = {'.mp3', '.m4a'}
+  if extension not in approved_extensions:
+    return upload_error('Only %s files may be uploaded' % ', '.join(approved_extensions))
+  approved_content_types = {'audio/mp3', 'audio/x-m4a'}
+  if file.content_type not in approved_content_types:
+    return upload_error('Only %s content may be uploaded' % ', '.join(approved_content_types))
 
   dest_path = datetime.datetime.now().strftime('%Y%m')
-  local_dest_path = os.path.join(config.media_path, dest_path)
+  local_dest_path = config.media_path + '/' + dest_path
   if not os.path.exists(local_dest_path):
     os.mkdir(local_dest_path)
 
-  dest_filename = os.path.join(dest_path, file.filename)
+  dest_filename = dest_path + '/' + file.filename
 
-  local_dest_filename = os.path.join(config.media_path, dest_filename)
+  local_dest_filename = config.media_path + '/' + dest_filename
   file.save(local_dest_filename)
+
+  if file.content_type == 'audio/x-m4a':
+    mp3_dest_filename = dest_filename[:-4] + '.mp3'
+    mp3_local_dest_filename = local_dest_filename[:-4] + '.mp3'
+    args = ['ffmpeg', '-y', '-i', local_dest_filename, '-b:a', '192k', mp3_local_dest_filename]
+    proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env={'PATH': os.getenv('PATH')})
+    try:
+      outs, errs = proc.communicate(timeout=60)
+    except subprocess.TimeoutExpired:
+      proc.kill()
+      outs, errs = proc.communicate()
+    os.remove(local_dest_filename)
+    if proc.returncode != 0:
+      return upload_error('Error converting %s to mp3: %s' % (dest_filename, errs))
+    dest_filename = mp3_dest_filename
+    local_dest_filename = mp3_local_dest_filename
 
   song_details = song.SongDetails(local_dest_filename)
 
@@ -83,3 +104,29 @@ def post_upload():
     remote_dest_filename = '/media/' + dest_filename
     transaction.commit()
     return flask.jsonify({'status': 'ok', 'path': remote_dest_filename})
+
+
+@app.route('/songs/<song_id>', methods=['DELETE'])
+def delete_song(song_id):
+  try:
+    song_id = uuid.UUID(song_id)
+  except ValueError as e:
+    return flask.jsonify({'status': 'error',
+                          'message': 'Did not recognize song_id as valid ID: ' + str(e)})
+
+  with db.transaction() as transaction:
+    user_id, session_id = sessions.get_session(transaction)
+    if user_id is None:
+      return flask.jsonify({'message': 'You must be logged in to delete files'}), 401
+    song_summaries = transaction.get_songs_by_ids([song_id])
+    if len(song_summaries) == 0:
+      return flask.jsonify({'status': 'error',
+                            'message': 'No song found with ID %s' % song_id}), 404
+    song_summary = song_summaries[0]
+
+    transaction.delete_song(song_id)
+
+    os.remove(config.media_path + '/' + song_summary.path)
+    transaction.commit()
+
+  return flask.jsonify({'status': 'ok', 'deleted': song_id})

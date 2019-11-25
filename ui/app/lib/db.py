@@ -348,6 +348,12 @@ class Transaction(object):
     else:
       return None
 
+  def delete_song(self, song_id):
+    SQL_DELETE_SONG = """
+      DELETE FROM songs WHERE id = %s;
+    """
+    self._cursor.execute(SQL_DELETE_SONG, [str(song_id)])
+
   def get_songs_by_ids(self, song_ids):
     SQL_SELECT_SONGS = """
       SELECT

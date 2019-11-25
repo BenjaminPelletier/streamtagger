@@ -1,6 +1,5 @@
 $(document).ready(function() {
     $( "#dialog-confirm-delete-song" ).hide();
-    $( "#song_details_template" ).hide();
 
     $(".moment-relative").each(function() {
         $(this).text(moment.utc($(this).text()).fromNow());
@@ -106,8 +105,18 @@ function delete_song(song_id) {
         width: 400,
         modal: true,
         buttons: {
-            "Delete all items": function() {
+            "Delete": function() {
                 $( this ).dialog( "close" );
+                $.ajax({
+                    url: '/songs/' + song_id,
+                    type: 'DELETE',
+                    success: function(result) {
+                        alert('Song deleted successfully');
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        alert('Error attempting to delete song: ' + errorThrown);
+                    }
+                });
             },
             Cancel: function() {
                 $( this ).dialog( "close" );
@@ -154,6 +163,10 @@ function toggle_song_details(song_id, columns) {
                         alert('Error updating details: ' + error + '\n' + jqXHR.responseText);
                     });
                 event.preventDefault();
+            });
+            $deletesongbutton = $detailsform.find('input[value=Delete]')
+            $deletesongbutton.click(function(event) {
+                delete_song(song_id);
             });
 
             $newrow.insertAfter(get_song_row_by_id(song_id)[0]);
