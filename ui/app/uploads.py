@@ -50,10 +50,11 @@ def post_upload():
   extension = file.filename[-4:].lower()
   approved_extensions = {'.mp3', '.m4a'}
   if extension not in approved_extensions:
-    return upload_error('Only %s files may be uploaded' % ', '.join(approved_extensions))
+    return upload_error('Only %s files may be uploaded (found %s)' % (', '.join(approved_extensions), extension))
   approved_content_types = {'audio/mp3', 'audio/x-m4a'}
   if file.content_type not in approved_content_types:
-    return upload_error('Only %s content may be uploaded' % ', '.join(approved_content_types))
+    return upload_error('Only %s content may be uploaded (found %s)' %
+                        (', '.join(approved_content_types), file.content_type))
 
   dest_path = datetime.datetime.now().strftime('%Y%m')
   local_dest_path = config.media_path + '/' + dest_path
@@ -65,7 +66,7 @@ def post_upload():
   local_dest_filename = config.media_path + '/' + dest_filename
   file.save(local_dest_filename)
 
-  if file.content_type == 'audio/x-m4a':
+  if file.content_type == 'audio/x-m4a' or extension == '.m4a':
     mp3_dest_filename = dest_filename[:-4] + '.mp3'
     mp3_local_dest_filename = local_dest_filename[:-4] + '.mp3'
     args = ['ffmpeg', '-y', '-i', local_dest_filename, '-b:a', '192k', mp3_local_dest_filename]
