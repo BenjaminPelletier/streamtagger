@@ -7,7 +7,6 @@ import uuid
 from app import app
 from .lib import config
 from .lib import db
-from .lib import jinja
 from .lib import jobs
 from .lib import song
 from . import sessions
@@ -36,8 +35,8 @@ def get_sync():
       if job.is_active():
         return flask.redirect('/sync/' + next(sync_jobs.keys()))
 
-  sync_template = jinja.env.get_template('sync.html')
-  return sync_template.render(logs=None, job_id=datetime.datetime.utcnow().strftime('%Y%m%d_%H%M%S'))
+  return flask.render_template(
+    'sync.html', logs=None, job_id=datetime.datetime.utcnow().strftime('%Y%m%d_%H%M%S'))
 
 
 @app.route('/sync/<job_id>', methods=['GET'])
@@ -56,9 +55,8 @@ def get_sync_progress(job_id):
     if job_id not in sync_jobs:
       return flask.jsonify({'status': 'error',
                             'message': 'Job ID %s not found' % job_id}), 404
-
-    progress_template = jinja.env.get_template('job_progress.html')
-    return progress_template.render(logs=sync_jobs[job_id].get_logs())
+    return flask.render_template(
+      'job_progress.html', logs=sync_jobs[job_id].get_logs())
 
 
 @app.route('/sync/<job_id>', methods=['POST'])

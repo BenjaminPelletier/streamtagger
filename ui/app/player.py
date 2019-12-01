@@ -3,7 +3,6 @@ import collections
 from app import app
 
 from .lib import db
-from .lib import jinja
 from . import sessions
 
 import flask
@@ -46,8 +45,9 @@ def make_table(songs, username, tagsets=None, reports=None):
 
 def render_player(songs, users, username, tagsets=None, reports=None):
   table_html = make_table(songs, username, tagsets, reports)
-  player = jinja.env.get_template('player.html')
-  return player.render(initial_song_table=table_html, username=username)
+  return flask.render_template(
+    'player.html',
+    initial_song_table=table_html, username=username)
 
 
 def parse_reports(report_str, transaction):

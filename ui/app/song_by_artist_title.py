@@ -2,7 +2,6 @@ import uuid
 
 from app import app
 from .lib import db
-from .lib import jinja
 from . import sessions
 from . import player
 
@@ -42,12 +41,13 @@ def songs_by_id(request_id):
     if song_id:
       songs = transaction.get_songs_by_ids([song_id])
       song = songs[0]
-      song_template = jinja.env.get_template('song_by_artist_title.html')
-      return song_template.render(song_title=song.get_title(),
-                                  song_artist=song.get_artist(),
-                                  song_id=song.song_id,
-                                  song_path='/media/' + song.path,
-                                  username=username)
+      return flask.render_template(
+        'song_by_artist_title.html',
+        song_title=song.get_title(),
+        song_artist=song.get_artist(),
+        song_id=song.song_id,
+        song_path='/media/' + song.path,
+        username=username)
 
     songs_for_artist = transaction.find_songs_by_artist_title(request_id, '')
     songs_for_title = transaction.find_songs_by_artist_title('', request_id)

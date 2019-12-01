@@ -5,7 +5,6 @@ import flask
 
 from app import app
 from .lib import db
-from .lib import jinja
 
 
 SESSION_KEY = 'streamtagger_session'
@@ -33,8 +32,7 @@ def login_get():
       # User already logged in with valid session
       return flask.redirect(flask.url_for('index', **flask.request.args))
 
-  template = jinja.env.get_template('login.html')
-  return template.render()
+  return flask.render_template('login.html')
 
 
 def login_post():

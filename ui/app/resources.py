@@ -11,7 +11,7 @@ import flask
 
 @app.route('/favicon.ico', methods=['GET'])
 def favicon():
- return flask.send_file('../../static/favicon.ico', mimetype='image/x-icon')
+ return flask.send_file('static/favicon.ico', mimetype='image/x-icon')
 
 
 @app.route('/static/<path:path>', methods=['GET'])

@@ -3,10 +3,7 @@ import re
 import uuid
 
 from app import app
-from .lib import config
 from .lib import db
-from .lib import jinja
-from .lib import song
 from .lib import tags
 from . import player
 from . import sessions
@@ -23,8 +20,7 @@ def get_tags():
     users = transaction.get_users()
     username = users[user_id]
     tag_defs = transaction.get_tag_definitions()
-  tags_template = jinja.env.get_template('tags.html')
-  return tags_template.render(tag_defs=tag_defs)
+  return flask.render_template('tags.html', tag_defs=tag_defs)
 
 
 @app.route('/tags', methods=['POST'])

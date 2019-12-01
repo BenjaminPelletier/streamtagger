@@ -1,7 +1,5 @@
 from app import app
-from .lib import config
 from .lib import db
-from .lib import jinja
 from . import sessions
 
 import flask
@@ -39,5 +37,4 @@ def get_user(username):
     logged_in_username = users[user_id]
   if username != logged_in_username:
     return flask.redirect('/users/' + logged_in_username)
-  template = jinja.env.get_template('user.html')
-  return template.render(username=username)
+  return flask.render_template('user.html', username=username)

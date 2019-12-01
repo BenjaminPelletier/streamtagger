@@ -4,7 +4,6 @@ import uuid
 from app import app
 from .lib import config
 from .lib import db
-from .lib import jinja
 from .lib import song
 from . import sessions
 
@@ -55,8 +54,8 @@ def get_song_details(song_id):
   for key, values in id3.items():
     song_attributes.append((key, values[0]))  #TODO: decide what to do with multi-valued keys
 
-  details_template = jinja.env.get_template('song_details.html')
-  return details_template.render(
+  return flask.render_template(
+    'song_details.html',
     song_id=song_id,
     song_path=song_summary.path,
     song_tags=', '.join(label_entries),

@@ -6,7 +6,6 @@ import uuid
 from app import app
 from .lib import config
 from .lib import db
-from .lib import jinja
 from .lib import song
 from . import sessions
 
@@ -27,8 +26,7 @@ def get_upload():
     user_id, session_id = sessions.get_session(transaction)
     if user_id is None:
       return flask.jsonify({'message': 'You must be logged in to upload files'}), 401
-  upload_template = jinja.env.get_template('upload.html')
-  return upload_template.render()
+  return flask.render_template('upload.html')
 
 
 @app.route('/upload', methods=['POST'])
