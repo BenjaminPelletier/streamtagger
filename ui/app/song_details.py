@@ -2,7 +2,7 @@ import os
 import uuid
 
 from app import app
-from .lib import config
+from .lib.config import Config
 from .lib import db
 from .lib import song
 from . import sessions
@@ -34,10 +34,10 @@ def get_song_details(song_id):
   song_summary = song_summaries[0]
 
   # Read MP3 file as ground truth
-  song_details = song.SongDetails(os.path.join(config.media_path, song_summary.path))
+  song_details = song.SongDetails(os.path.join(Config.media_path, song_summary.path))
   label_entries = song_details.tags.get_user_label_entries(username, tag_types)
   try:
-    id3 = mutagen.easyid3.EasyID3(os.path.join(config.media_path, song_summary.path))
+    id3 = mutagen.easyid3.EasyID3(os.path.join(Config.media_path, song_summary.path))
   except mutagen.id3.ID3NoHeaderError:
     id3 = mutagen.easyid3.EasyID3()
   if 'title' not in id3:
@@ -79,7 +79,7 @@ def post_song_details(song_id):
 
   # Update attributes, if necessary
   try:
-    id3 = mutagen.easyid3.EasyID3(os.path.join(config.media_path, summary.path))
+    id3 = mutagen.easyid3.EasyID3(os.path.join(Config.media_path, summary.path))
   except mutagen.id3.ID3NoHeaderError:
     id3 = mutagen.easyid3.EasyID3()
 
@@ -109,13 +109,13 @@ def post_song_details(song_id):
     changes = True
 
   if changes:
-    id3.save(os.path.join(config.media_path, summary.path), v2_version=3)
+    id3.save(os.path.join(Config.media_path, summary.path), v2_version=3)
 
   with db.transaction() as transaction:
     db_changes = False
 
     # Update tags, if necessary
-    song_details = song.SongDetails(os.path.join(config.media_path, summary.path))
+    song_details = song.SongDetails(os.path.join(Config.media_path, summary.path))
     if 'tags' in flask.request.form:
       song_tags = song_details.tags
       if flask.request.form['tags']:

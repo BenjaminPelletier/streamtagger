@@ -2,10 +2,9 @@ import datetime
 import glob
 import os
 import threading
-import uuid
 
 from app import app
-from .lib import config
+from .lib.config import Config
 from .lib import db
 from .lib import jobs
 from .lib import song
@@ -78,7 +77,7 @@ def post_sync_start(job_id):
 
 
 def sync(job):
-  file_song_ids = sync_songs_from_folder(config.media_path, job)
+  file_song_ids = sync_songs_from_folder(Config.media_path, job)
   print(file_song_ids)
   #TODO: remove songs in DB but not on disk
 
@@ -101,7 +100,7 @@ def sync_songs_from_folder(path, job):
 
 def sync_song(mp3_filename, users, transaction, job):
   song_details = song.SongDetails(mp3_filename)
-  media_path = os.path.relpath(mp3_filename, config.media_path)
+  media_path = os.path.relpath(mp3_filename, Config.media_path)
   song_id = transaction.get_song_id(media_path)
   if song_details.song_id and not song_id:
     # No database entry for the song at this path.  See if there is a DB entry for song ID

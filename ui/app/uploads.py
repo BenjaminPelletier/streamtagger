@@ -4,7 +4,7 @@ import subprocess
 import uuid
 
 from app import app
-from .lib import config
+from .lib.config import Config
 from .lib import db
 from .lib import song
 from . import sessions
@@ -57,13 +57,13 @@ def post_upload():
                         (', '.join(approved_content_types), file.content_type))
 
   dest_path = datetime.datetime.now().strftime('%Y%m')
-  local_dest_path = config.media_path + '/' + dest_path
+  local_dest_path = Config.media_path + '/' + dest_path
   if not os.path.exists(local_dest_path):
     os.mkdir(local_dest_path)
 
   dest_filename = dest_path + '/' + file.filename
 
-  local_dest_filename = config.media_path + '/' + dest_filename
+  local_dest_filename = Config.media_path + '/' + dest_filename
   file.save(local_dest_filename)
 
   if file.content_type in ('audio/x-m4a', 'audio/mp4') or extension == '.m4a':
@@ -127,7 +127,7 @@ def delete_song(song_id):
 
     transaction.delete_song(song_id)
 
-    os.remove(config.media_path + '/' + song_summary.path)
+    os.remove(Config.media_path + '/' + song_summary.path)
     transaction.commit()
 
   return flask.jsonify({'status': 'ok', 'deleted': song_id})
