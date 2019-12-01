@@ -26,7 +26,9 @@ def get_upload():
     user_id, session_id = sessions.get_session(transaction)
     if user_id is None:
       return flask.jsonify({'message': 'You must be logged in to upload files'}), 401
-  return flask.render_template('upload.html')
+  users = transaction.get_users()
+  username = users[user_id]
+  return flask.render_template('upload.html', username=username)
 
 
 @app.route('/upload', methods=['POST'])

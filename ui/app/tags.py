@@ -20,7 +20,7 @@ def get_tags():
     users = transaction.get_users()
     username = users[user_id]
     tag_defs = transaction.get_tag_definitions()
-  return flask.render_template('tags.html', tag_defs=tag_defs)
+  return flask.render_template('tags.html', tag_defs=tag_defs, username=username)
 
 
 @app.route('/tags', methods=['POST'])

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Streamtagger</title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript" src="/static/js/moment.js"></script>
+    <script type="text/javascript" src="/static/js/player.js"></script>
+    <script type="text/javascript" src="/static/js/dropdown.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/dropdown.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/player.css">
+    {% block headlinks %}{% endblock %}
+</head>
+<body>
+
+<div id="top_container">
+    <div id="menubar">
+        <div class="dropdown" id="home">
+            <button onclick="goHome()" class="dropbtn">Home</button>
+        </div>
+        <div class="dropdown" id="tags">
+            <button onclick="goTags()" class="dropbtn">Tags</button>
+        </div>
+        <div class="dropdown" id="add_content">
+            <button onclick="show_user_dropdown('content_dropdown')" class="dropbtn">+</button>
+            <div id="content_dropdown" class="dropdown-content">
+                <a href="upload">Songs</a>
+            </div>
+        </div>
+        <div class="dropdown" id="user_context">
+            <button onclick="show_user_dropdown('user_dropdown')" class="dropbtn">{{ username }}</button>
+            <div id="user_dropdown" class="dropdown-content">
+                <a href="#" onclick="logout()">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    {% block content %}{% endblock %}
+</div>
+
+{% block dialogs %}{% endblock %}
+
+</body>
+</html>

@@ -1,9 +1,6 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% extends "base.html" %}
 
+{% block headlinks %}
     <title>Streamtagger: upload media</title>
 
     <!-- Bootstrap core CSS -->
@@ -14,23 +11,9 @@
     <link href="static/css/upload.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="static/css/dropdown.css">
     <script type="text/javascript" src="static/js/dropdown.js"></script>
-  </head>
+{% endblock %}
 
-  <body>
-<!--
-    <div id="menubar">
-      <div class="dropdown" id="home">
-        <button onclick="document.href='/';" class="dropbtn">Home</button>
-      </div>
-      <div class="dropdown" id="user_context">
-        <button onclick="show_user_dropdown('user_dropdown')" class="dropbtn">{{ username }}</button>
-        <div id="user_dropdown" class="dropdown-content">
-          <a href="#" onclick="logout()">Logout</a>
-        </div>
-      </div>
-    </div>
--->
-
+{% block content %}
     <main role="main" class="container">
 
       <h1>Streamtagger: upload media</h1>
@@ -123,5 +106,4 @@
     <script type="text/html" id="debug-template">
       <li class="list-group-item text-%%color%%"><strong>%%date%%</strong>: %%message%%</li>
     </script>
-  </body>
-</html>
+{% endblock %}

@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Progress</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block content %}
     {% if logs %}
     <table>
         <tbody>
@@ -14,5 +10,4 @@
         </tbody>
     </table>
     {% endif %}
-</body>
-</html>
+{% endblock %}
