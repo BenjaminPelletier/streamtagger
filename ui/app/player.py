@@ -1,7 +1,8 @@
 import collections
 
+from app import app
+
 from .lib import db
-from .lib.flaskapp import app
 from .lib import jinja
 from . import sessions
 
@@ -13,8 +14,8 @@ Report = collections.namedtuple('Report', ('name', 'tag_name', 'username', 'tag_
 
 def make_tag_cell(report, value, username):
   editable = report.username is None or report.username == username
-  tag_cell_template = jinja.env.get_template('tag_cell.html')
-  return tag_cell_template.render(
+  return flask.render_template(
+    'tag_cell.html',
     tag_type=report.tag_type, tag_name=report.tag_name, tag_value=value, editable=editable, report_name=report.name)
 
 
@@ -38,8 +39,9 @@ def make_table(songs, username, tagsets=None, reports=None):
       value = tagset.compute_report_value(report) if tagset else None
       cols.append(make_tag_cell(report, value, username))
     song_rows.append(cols)
-  table_template = jinja.env.get_template('song_table.html')
-  return table_template.render(header=header, song_rows=song_rows, song_ids=song_ids, song_paths=song_paths)
+  return flask.render_template(
+    'song_table.html',
+    header=header, song_rows=song_rows, song_ids=song_ids, song_paths=song_paths)
 
 
 def render_player(songs, users, username, tagsets=None, reports=None):

@@ -1,8 +1,9 @@
 import os
 
+from app import app
+
 from .lib import config
 from .lib import db
-from .lib.flaskapp import app
 from . import sessions
 
 import flask
@@ -15,7 +16,7 @@ def favicon():
 
 @app.route('/static/<path:path>', methods=['GET'])
 def static_content(path):
-  return flask.send_file('../../static/' + path)
+  return flask.send_file('static/' + path)
 
 
 @app.route('/media/<path:path>', methods=['GET'])

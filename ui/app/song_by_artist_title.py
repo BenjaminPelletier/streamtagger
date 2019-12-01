@@ -1,7 +1,7 @@
 import uuid
 
+from app import app
 from .lib import db
-from .lib.flaskapp import app
 from .lib import jinja
 from . import sessions
 from . import player

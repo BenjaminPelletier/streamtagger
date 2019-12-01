@@ -3,9 +3,9 @@ import os
 import subprocess
 import uuid
 
+from app import app
 from .lib import config
 from .lib import db
-from .lib.flaskapp import app
 from .lib import jinja
 from .lib import song
 from . import sessions

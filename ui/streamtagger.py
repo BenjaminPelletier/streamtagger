@@ -1,9 +1,11 @@
 import logging
 import sys
 
-from app import player, song_details, song_by_artist_title, resources, sessions, uploads, users, song_list, sync, tags, startup
-from app.lib.flaskapp import app
-from app.lib import dbinit
+from app import app
+
+# from app import player, song_details, song_by_artist_title, resources, sessions, uploads, users, song_list, sync, tags, startup
+# from app.lib.flaskapp import app
+# from app.lib import dbinit
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 log = logging.getLogger('streamtagger')
