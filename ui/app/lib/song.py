@@ -11,7 +11,7 @@ class SongSummary(object):
   """Representation of a song in the database for quick lookup"""
 
   def __init__(self, song_id, title, artist, path, added_at, added_by):
-    self.song_id = uuid.UUID(song_id)
+    self.song_id = uuid.UUID(str(song_id))
     self.title = title
     self.artist = artist
     self.path = path
