@@ -26,6 +26,6 @@ docker run \
   --restart always \
   --network=streamtagger \
   -v "${PWD}/storage/media:/var/media" \
-  -e ST_DB_CONNECTIONSTRING="host=streamtagger_db port=5432 user=streamtagger password=mysecretpassword" \
+  -e ST_DB_CONNECTIONSTRING="postgresql://streamtagger:mysecretpassword@streamtagger_db/streamtagger" \
   -e PYTHONUNBUFFERED=TRUE \
   -p 5000:5000 -d ${image_name}
