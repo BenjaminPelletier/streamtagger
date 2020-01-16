@@ -3,6 +3,7 @@ import collections
 from app import app
 
 from .lib import db
+from .lib import query
 from . import sessions
 
 import flask
@@ -73,36 +74,8 @@ def index():
     users = transaction.get_users()
     username = users[user_id]
 
-    tagreqs = flask.request.args.getlist('hastag')
-    if tagreqs:
-      tagdefs = transaction.get_tag_definitions()
-      userids_by_name = {v: k for k, v in users.items()}
-      where_clauses = []
-      for tagreq in tagreqs:
-        tagexprs = tagreq.split('|')
-        or_clauses = []
-        for tagexpr in tagexprs:
-          if '=' in tagexpr:
-            tagexpr, tagvalue = tagexpr.split('=')
-            tagvalue = int(tagvalue)
-          else:
-            tagvalue = None
-          if '@' in tagexpr:
-            tagusername, tagname = tagexpr.split('@')
-          else:
-            tagusername, tagname = None, tagexpr
-          or_clause = 'tags.tag_id = \'%s\'' % tagdefs[tagname].id
-          if tagusername:
-            or_clause += ' AND tags.user_id = \'%s\'' % userids_by_name[tagusername]
-          if tagvalue:
-            or_clause += ' AND tags.value = %d' % tagvalue
-          or_clauses.append('(' + or_clause + ')')
-        if len(or_clauses) > 1:
-          where_clauses.append('(' + ' OR '.join(or_clauses) + ')')
-        else:
-          where_clauses.append(or_clauses[0])
-    else:
-      where_clauses = None
+    userids_by_name = {v: k for k, v in users.items()}
+    where_clauses = query.get_where_clauses(flask.request.args, transaction, userids_by_name)
 
     songs = transaction.query_songs(where_clauses)
     tagsets, tag_names = transaction.get_tags([song.song_id for song in songs])

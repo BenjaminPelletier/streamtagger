@@ -268,8 +268,8 @@ class Transaction(object):
           WHERE %s
           ORDER BY songs.added_at DESC
         """ % where_clause
-        self._transaction.execute(SQL_SELECT_SONG_IDS)
-        new_ids = set(row[0] for row in self._transaction.fetchall())
+        result = dbx.engine.execute(SQL_SELECT_SONG_IDS)
+        new_ids = set(row[0] for row in result)
         if song_ids:
           song_ids = song_ids.intersection(new_ids)
         else:
