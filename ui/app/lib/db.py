@@ -51,25 +51,15 @@ class Transaction(object):
     return self.add_user_with_hash(username, password_hash)
 
   def add_user_with_hash(self, username, password_hash):
-    SQL_INSERT_USER = """
-      INSERT INTO users
-      (username, password_hash) VALUES (%s, %s)
-      RETURNING id;
-    """
-
-    self._transaction.execute(SQL_INSERT_USER, [username, password_hash])
-    row = self._transaction.fetchone()
-    user_id = row[0]
-    return user_id
+    user = User(username=username, password_hash=password_hash)
+    dbx.session.add(user)
+    dbx.session.flush()
+    return user.id
 
   def update_user_with_hash(self, username, password_hash):
-    SQL_UPDATE_USER = """
-      UPDATE users
-      SET password_hash = %s
-      WHERE username = %s;
-    """
-
-    self._transaction.execute(SQL_UPDATE_USER, [password_hash, username])
+    user = User.query.filter(User.username == username).one()
+    user.password_hash = password_hash
+    dbx.session.flush()
 
   def get_user(self, username):
     user = User.query.filter(User.username == username).one_or_none()
@@ -100,22 +90,17 @@ class Transaction(object):
     if not added_at:
       added_at = datetime.datetime.utcnow()
     timestamp = added_at.isoformat()
-    if not song_id:
-      SQL_INSERT_SONG = """
-        INSERT INTO songs
-        (path, title, artist, added_at, added_by) VALUES (%s, %s, %s, %s, %s)
-        RETURNING id;
-      """
-      self._transaction.execute(SQL_INSERT_SONG, [path, title, artist, timestamp, user_id])
-    else:
-      SQL_INSERT_SONG = """
-        INSERT INTO songs
-        (id, path, title, artist, added_at, added_by) VALUES (%s, %s, %s, %s, %s, %s)
-        RETURNING id;
-      """
-      self._transaction.execute(SQL_INSERT_SONG, [str(song_id), path, title, artist, timestamp, user_id])
-    row = self._transaction.fetchone()
-    song_id = row[0]
+    song = Song(
+      path=path,
+      title=title,
+      artist=artist,
+      added_at=added_at,
+      added_by=user_id)
+    if song_id:
+      song.id = song_id
+    dbx.session.add(song)
+    dbx.session.flush()
+    song_id = song.id
     return SongSummary(song_id=song_id, path=path, title=title, artist=artist, added_at=timestamp, added_by=username)
 
   def update_song(self, summary):
@@ -225,23 +210,14 @@ class Transaction(object):
           self.clear_label(tagdef_id, song_id, user_ids[db_label.username])
 
   def get_song_id(self, path):
-    SQL_GET_SONG = """
-      SELECT id FROM songs
-      WHERE path LIKE %s;
-    """
-    self._transaction.execute(SQL_GET_SONG, [path])
-    row = self._transaction.fetchone()
-    if row:
-      song_id = row[0]
-      return song_id
-    else:
-      return None
+    song = Song.query.filter(Song.path.like(path)).first()
+    return song.song_id if song else None
 
   def delete_song(self, song_id):
     SQL_DELETE_SONG = """
       DELETE FROM songs WHERE id = %s;
-    """
-    self._transaction.execute(SQL_DELETE_SONG, [str(song_id)])
+    """ % str(song_id)
+    dbx.engine.execute(SQL_DELETE_SONG)
 
   def get_songs_by_ids(self, song_ids):
     Song.query.filter(Song.id.in_(song_ids)).all()
