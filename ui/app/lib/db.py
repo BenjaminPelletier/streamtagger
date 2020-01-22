@@ -4,6 +4,7 @@ import os
 import threading
 import uuid
 
+import sqlalchemy
 
 from app import dbx
 from app.models import Session, Song, Tag, TagDefinition, User
@@ -104,26 +105,19 @@ class Transaction(object):
     return SongSummary(song_id=song_id, path=path, title=title, artist=artist, added_at=timestamp, added_by=username)
 
   def update_song(self, summary):
-    SQL_UPDATE_SONG = """
-      UPDATE songs
-      SET (path, title, artist, added_at, added_by) = (%s, %s, %s, %s, u.id)
-      FROM songs s JOIN users u ON u.username = %s
-      WHERE songs.id = %s;
-    """
-    self._transaction.execute(SQL_UPDATE_SONG,
-                              [summary.path, summary.title, summary.artist, summary.added_at, summary.added_by,
-                          str(summary.song_id)])
+    song = Song.query.get(str(summary.song_id))
+    song.path = summary.path
+    song.title = summary.title
+    song.artist = summary.artist
+    if summary.added_at:
+      song.added_at = summary.added_at
+    #TODO: change added_by
+    if summary.added_by:
+      raise NotImplementedError('Unable to change song added_by column')
 
   def get_tag_ids(self, tag_names):
-    ids = {}
-    SQL_FIND_TAGS = """
-      SELECT id, name
-      FROM tag_definitions
-      WHERE name IN %s
-    """
-    self._transaction.execute(SQL_FIND_TAGS, (tag_names,))
-    for row in self._transaction.fetchall():
-      ids[row[1]] = row[0]
+    tagdefs = TagDefinition.query.filter(TagDefinition.name.in_(tag_names)).all()
+    return {tagdef.name: tagdef.id for tagdef in tagdefs}
 
   def get_tag_definitions(self):
     return {tagdef.name: tags.TagDefinition(
@@ -138,32 +132,24 @@ class Transaction(object):
     return {tag_def.name: tag_def.type for tag_def in self.get_tag_definitions().values()}
 
   def create_tag_definition(self, name, tag_type, user_id):
-    SQL_CREATE_TAG_DEFINITION = """
-      INSERT INTO tag_definitions
-      (name, type, created_by, created_at) VALUES (%s, %s, %s, %s)
-      RETURNING id;
-    """
     timestamp = datetime.datetime.utcnow().isoformat()
-    self._transaction.execute(SQL_CREATE_TAG_DEFINITION, (name, tag_type, user_id, timestamp))
-    row = self._transaction.fetchone()
-    return row[0]
+    tagdef = TagDefinition(name=name, type=tag_type, created_by=user_id, created_at=timestamp)
+    dbx.session.add(tagdef)
+    return tagdef.id
 
   def set_label(self, tag_def_id, song_id, user_id, value):
-    SQL_UPSERT_TAG = """
-      INSERT INTO tags
-      (tag_id, song_id, user_id, value, last_changed) VALUES (%s, %s, %s, %s, %s)
-      ON CONFLICT (tag_id, song_id, user_id) DO
-      UPDATE SET (value, last_changed) = (EXCLUDED.value, EXCLUDED.last_changed);
-    """
+    #TODO: Verify upsert race condition behavior
     timestamp = datetime.datetime.utcnow().isoformat()
-    self._transaction.execute(SQL_UPSERT_TAG, [str(tag_def_id), str(song_id), str(user_id), value, timestamp])
+    tag = Tag.query.filter(Tag.tag_id == tag_def_id).filter(Tag.song_id == song_id).filter(Tag.user_id == user_id).one_or_none()
+    if tag:
+      tag.value = value
+      tag.last_changed = timestamp
+    else:
+      tag = Tag(tag_id=tag_def_id, song_id=song_id, user_id=user_id, value=value, last_changed=timestamp)
+      dbx.session.add(tag)
 
   def clear_label(self, tag_def_id, song_id, user_id):
-    SQL_REMOVE_TAG = """
-      DELETE FROM tags
-      WHERE tag_id = %s AND song_id = %s AND user_id = %s;
-    """
-    self._transaction.execute(SQL_REMOVE_TAG, [str(tag_def_id), str(song_id), str(user_id)])
+    Tag.query.filter(Tag.tag_id == tag_def_id).filter(Tag.song_id == song_id).filter(Tag.user_id == user_id).delete()
 
   def get_tags(self, song_ids):
     song_tags = Tag.query.filter(Tag.song_id.in_(song_ids)).all()
@@ -214,10 +200,7 @@ class Transaction(object):
     return song.song_id if song else None
 
   def delete_song(self, song_id):
-    SQL_DELETE_SONG = """
-      DELETE FROM songs WHERE id = %s;
-    """ % str(song_id)
-    dbx.engine.execute(SQL_DELETE_SONG)
+    Song.query.filter(Song.id == song_id).delete()
 
   def get_songs_by_ids(self, song_ids):
     Song.query.filter(Song.id.in_(song_ids)).all()
@@ -256,19 +239,9 @@ class Transaction(object):
     return self.get_songs_by_ids(song_ids)
 
   def find_songs_by_artist_title(self, artist, title):
-    SQL_FIND_SONGS_BY_ARTIST = """
-      SELECT id
-      FROM songs
-      WHERE artist ILIKE '%%%s%%';
-    """ % artist
-    SQL_FIND_SONGS_BY_TITLE = """
-      SELECT id
-      FROM songs
-      WHERE title ILIKE '%%%s%%';
-    """ % title
-    self._transaction.execute(SQL_FIND_SONGS_BY_ARTIST)
-    songs_with_artist = {row[0] for row in self._transaction.fetchall()}
-    self._transaction.execute(SQL_FIND_SONGS_BY_TITLE)
-    songs_with_title = {row[0] for row in self._transaction.fetchall()}
-    song_ids = songs_with_artist.intersection(songs_with_title)
+    songs_with_artist = Song.query.filter(sqlalchemy.func.lower(Song.artist).contains(artist.lower()))
+    songs_with_title = Song.query.filter(sqlalchemy.func.lower(Song.title).contains(title.lower()))
+    artist_ids = {s.id for s in songs_with_artist}
+    title_ids = {s.id for s in songs_with_title}
+    song_ids = artist_ids.intersection(title_ids)
     return self.get_songs_by_ids(song_ids)

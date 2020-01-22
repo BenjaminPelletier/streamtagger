@@ -133,9 +133,8 @@ def post_song_details(song_id):
     # Update database summary, if necessary
     summary, to_update = song_details.make_summary(summary.path, summary)
     if to_update:
-      with db.transaction() as transaction:
-        transaction.update_song(summary)
-        db_changes = True
+      transaction.update_song(summary)
+      db_changes = True
 
     if db_changes:
         transaction.commit()
