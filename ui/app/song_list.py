@@ -2,6 +2,7 @@ import os
 
 from app import app
 from .lib import db
+from .lib import query
 from . import sessions
 
 import flask
@@ -16,13 +17,11 @@ def song_list():
     users = transaction.get_users()
     username = users[user_id]
 
-    query = flask.request.args.get('q')
-    where_clause = None
-    if query:
-      pass
-    summaries = transaction.query_songs(where_clause)
+    userids_by_name = {v: k for k, v in users.items()}
+    where_clauses = query.get_where_clauses(flask.request.args, transaction, userids_by_name)
+    summaries = transaction.query_songs(where_clauses)
   songs = [{
       'title': summary.title,
-      'path': os.path.join('/media', summary.path)
+      'path': '/media/' + summary.path
     } for summary in summaries]
   return flask.jsonify({'status': 'success', 'songs': songs}), 200
