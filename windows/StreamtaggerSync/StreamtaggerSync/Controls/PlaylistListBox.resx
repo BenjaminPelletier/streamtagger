@@ -117,4 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="cmdSave.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        xAAADsQBlSsOGwAAATZJREFUSEvtl0GORFAURa3BOliDRCyFIcIGTBhZhIkBc2YGdvY79wV59fuR/grV
+        nfRNTlLh3n+SSpVUWepDeRHP86yqqlJFUbxN0zTLqXI2cZIkyrKsS6nrejn9e0g8DIM4vII9OYnLstyK
+        nueJb91PwJZLVyQ5iTFaS3h9NvwcHV3+mBhw+aNi0LYtdR8Xr+f/HvEdn2oOeqL4bv7FYukO/qY4CAKV
+        pinh+77Y2eOU2LZtNU0TDXlwDfekjc4pcdd1NJKCe9JGx1jsui4NjoKOtOUYi8MwpMFR0JG2HGNxFEU0
+        OAo60pZjLHYchwZHQUfacozFoO97GknBPWmjc0p8+dcJv6Wl0h54gMRxTJg+QODaxOM4iqU7gGsTI1mW
+        icUryfN8sTExcuVfGA7OxNk8L+LnotQXaSmSXpf6INMAAAAASUVORK5CYII=
+</value>
+  </data>
+  <metadata name="ofdPlaylists.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <metadata name="sfdPlaylists.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>130, 17</value>
+  </metadata>
 </root>

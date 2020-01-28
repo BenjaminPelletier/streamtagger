@@ -98,6 +98,19 @@ namespace StreamtaggerSync
                 }
             }
 
+            PlaylistSet playlists = playlistListBox1.Playlists;
+            for (int i = 0; i < playlists.Playlists.Count - 1; i++)
+            {
+                for (int j = i + 1; j < playlists.Playlists.Count; j++)
+                {
+                    if (playlists.Playlists[i].Name == playlists.Playlists[j].Name)
+                    {
+                        MessageBox.Show(this, "There are multiple playlists named '" + playlists.Playlists[i].Name + "'; please rename or delete so there are no duplicate names.", "Duplicate playlist names", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return;
+                    }
+                }
+            }
+
             var passwordDialog = new PasswordDialog();
             passwordDialog.Password = _Password;
             DialogResult result = passwordDialog.ShowDialog(this);
@@ -107,7 +120,7 @@ namespace StreamtaggerSync
             }
             _Password = passwordDialog.Password;
 
-            var synchronizer = new Synchronizer(playlistListBox1.Playlists, _Preferences, _Password);
+            var synchronizer = new Synchronizer(playlists, _Preferences, _Password);
             synchronizer.LogMessage += synchronizer_LogMessage;
             synchronizer.RequestDeleteOldPlaylists += synchronizer_RequestDeleteOldPlaylists;
             synchronizer.RequestDeleteUnreferencedSongs += synchronizer_RequestDeleteUnreferencedSongs;

@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Json.Serialization;
+using System.IO;
 
 namespace StreamtaggerSync
 {
@@ -68,6 +70,8 @@ namespace StreamtaggerSync
             PlaylistControls.Add(playlistControl);
 
             cmdAdd.Top = playlistControl.Bottom + 3;
+            cmdLoad.Top = cmdAdd.Top;
+            cmdSave.Top = cmdAdd.Top;
 
             this.Controls.Add(playlistControl);
 
@@ -113,6 +117,8 @@ namespace StreamtaggerSync
             {
                 cmdAdd.Top = PlaylistControls.Last().Bottom + 3;
             }
+            cmdLoad.Top = cmdAdd.Top;
+            cmdSave.Top = cmdAdd.Top;
             PlaylistsChanged?.Invoke(this, EventArgs.Empty);
             this.ResumeLayout();
         }
@@ -125,6 +131,39 @@ namespace StreamtaggerSync
         private void playlist_InformationRequested(object sender, PlaylistControl.InformationRequestedEventArgs e)
         {
             InformationRequested?.Invoke(this, e);
+        }
+
+        private void cmdLoad_Click(object sender, EventArgs e)
+        {
+            if (ofdPlaylists.ShowDialog(this) == DialogResult.OK)
+            {
+                PlaylistSet newPlaylists;
+                try
+                {
+                    newPlaylists = JsonTranslator.Singleton.MakeObject<PlaylistSet>(JsonObject.Parse(File.ReadAllText(ofdPlaylists.FileName).Trim()));
+                } catch (Exception ex)
+                {
+                    MessageBox.Show(this, "Error loading playlists:\r\n" + ex.GetType().FullName + ": " + ex.ToString(), "Error loading playlists", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                foreach (Playlist playlist in newPlaylists.Playlists)
+                {
+                    AddControl(playlist);
+                }
+                sfdPlaylists.InitialDirectory = ofdPlaylists.InitialDirectory;
+                sfdPlaylists.FileName = ofdPlaylists.FileName;
+                PlaylistsChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private void cmdSave_Click(object sender, EventArgs e)
+        {
+            if (sfdPlaylists.ShowDialog(this) == DialogResult.OK)
+            {
+                File.WriteAllText(sfdPlaylists.FileName, JsonTranslator.Singleton.MakeJson(Playlists).ToMultilineString());
+                ofdPlaylists.InitialDirectory = sfdPlaylists.InitialDirectory;
+                ofdPlaylists.FileName = sfdPlaylists.FileName;
+            }
         }
     }
 }
