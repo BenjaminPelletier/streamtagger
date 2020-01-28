@@ -109,6 +109,8 @@ namespace StreamtaggerSync
 
             var synchronizer = new Synchronizer(playlistListBox1.Playlists, _Preferences, _Password);
             synchronizer.LogMessage += synchronizer_LogMessage;
+            synchronizer.RequestDeleteOldPlaylists += synchronizer_RequestDeleteOldPlaylists;
+            synchronizer.RequestDeleteUnreferencedSongs += synchronizer_RequestDeleteUnreferencedSongs;
 
             await synchronizer.Synchronize(token);
         }
@@ -124,6 +126,40 @@ namespace StreamtaggerSync
             txtSyncLog.Text += "==> " + e.Message + "\r\n";
             txtSyncLog.SelectionStart = txtSyncLog.Text.Length - 1;
             txtSyncLog.ScrollToCaret();
+        }
+
+        private void synchronizer_RequestDeleteOldPlaylists(object sender, Synchronizer.RequestDeleteOldPlaylistsEventArgs e)
+        {
+            if (MessageBox.Show(
+                this,
+                "Do you want to delete " + e.Playlists.Length + " old playlists from this computer?  (" + e.Playlists.Take(Math.Min(e.Playlists.Length, 3)).Select(p => p.Path.Name).Aggregate((p1, p2) => p1 + ", " + p2) + (e.Playlists.Length > 3 ? ", ..." : "") + ")",
+                "Delete playlists?",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question,
+                MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+            {
+                foreach (var playlist in e.Playlists)
+                {
+                    playlist.Delete = true;
+                }
+            }
+        }
+
+        private void synchronizer_RequestDeleteUnreferencedSongs(object sender, Synchronizer.RequestDeleteUnreferencedSongsEventArgs e)
+        {
+            if (MessageBox.Show(
+                this,
+                "Do you want to delete " + e.Songs.Length + " songs not referenced by any playlists from this computer?  (" + e.Songs.Take(Math.Min(e.Songs.Length, 3)).Select(p => p.Path.Name).Aggregate((p1, p2) => p1 + ", " + p2) + (e.Songs.Length > 3 ? ", ..." : "") + ")",
+                "Delete songs?",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question,
+                MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+            {
+                foreach (var song in e.Songs)
+                {
+                    song.Delete = true;
+                }
+            }
         }
 
         private void playlistListBox1_InformationRequested(object sender, PlaylistControl.InformationRequestedEventArgs e)

@@ -29,6 +29,7 @@ namespace StreamtaggerSync
             {
                 _Playlist.Name = txtName.Text;
                 _Playlist.Query = txtQuery.Text;
+                _Playlist.Enabled = chkEnable.Checked;
                 return _Playlist;
             }
             set
@@ -36,18 +37,28 @@ namespace StreamtaggerSync
                 _Playlist = value;
                 txtName.Text = value.Name;
                 txtQuery.Text = value.Query;
+                chkEnable.Checked = value.Enabled;
             }
         }
 
         public PlaylistControl()
         {
             InitializeComponent();
-            _Playlist = new Playlist(txtName.Text, txtQuery.Text);
+            _Playlist = new Playlist(txtName.Text, txtQuery.Text, true);
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
         {
             DeleteRequested?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void chkEnable_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkEnable.Checked != _Playlist.Enabled)
+            {
+                _Playlist.Enabled = chkEnable.Checked;
+                PlaylistChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         private void txtName_Leave(object sender, EventArgs e)

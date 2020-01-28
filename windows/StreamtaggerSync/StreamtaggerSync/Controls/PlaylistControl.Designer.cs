@@ -33,12 +33,13 @@
             this.txtQuery = new System.Windows.Forms.TextBox();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.llQuery = new System.Windows.Forms.LinkLabel();
+            this.chkEnable = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 6);
+            this.label1.Location = new System.Drawing.Point(24, 6);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(38, 13);
             this.label1.TabIndex = 0;
@@ -46,7 +47,7 @@
             // 
             // txtName
             // 
-            this.txtName.Location = new System.Drawing.Point(47, 3);
+            this.txtName.Location = new System.Drawing.Point(68, 3);
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(111, 20);
             this.txtName.TabIndex = 1;
@@ -56,9 +57,9 @@
             // 
             this.txtQuery.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtQuery.Location = new System.Drawing.Point(208, 3);
+            this.txtQuery.Location = new System.Drawing.Point(229, 3);
             this.txtQuery.Name = "txtQuery";
-            this.txtQuery.Size = new System.Drawing.Size(209, 20);
+            this.txtQuery.Size = new System.Drawing.Size(265, 20);
             this.txtQuery.TabIndex = 3;
             this.txtQuery.Leave += new System.EventHandler(this.txtQuery_Leave);
             // 
@@ -66,7 +67,7 @@
             // 
             this.cmdDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdDelete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.cmdDelete.Location = new System.Drawing.Point(423, 1);
+            this.cmdDelete.Location = new System.Drawing.Point(500, 1);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(23, 23);
             this.cmdDelete.TabIndex = 4;
@@ -77,7 +78,7 @@
             // llQuery
             // 
             this.llQuery.AutoSize = true;
-            this.llQuery.Location = new System.Drawing.Point(164, 6);
+            this.llQuery.Location = new System.Drawing.Point(185, 6);
             this.llQuery.Name = "llQuery";
             this.llQuery.Size = new System.Drawing.Size(38, 13);
             this.llQuery.TabIndex = 5;
@@ -85,17 +86,30 @@
             this.llQuery.Text = "Query:";
             this.llQuery.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llQuery_LinkClicked);
             // 
+            // chkEnable
+            // 
+            this.chkEnable.AutoSize = true;
+            this.chkEnable.Checked = true;
+            this.chkEnable.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkEnable.Location = new System.Drawing.Point(3, 6);
+            this.chkEnable.Name = "chkEnable";
+            this.chkEnable.Size = new System.Drawing.Size(15, 14);
+            this.chkEnable.TabIndex = 6;
+            this.chkEnable.UseVisualStyleBackColor = true;
+            this.chkEnable.CheckedChanged += new System.EventHandler(this.chkEnable_CheckedChanged);
+            // 
             // PlaylistControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.chkEnable);
             this.Controls.Add(this.llQuery);
             this.Controls.Add(this.cmdDelete);
             this.Controls.Add(this.txtQuery);
             this.Controls.Add(this.txtName);
             this.Controls.Add(this.label1);
             this.Name = "PlaylistControl";
-            this.Size = new System.Drawing.Size(450, 26);
+            this.Size = new System.Drawing.Size(527, 26);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -108,5 +122,6 @@
         private System.Windows.Forms.TextBox txtQuery;
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.LinkLabel llQuery;
+        private System.Windows.Forms.CheckBox chkEnable;
     }
 }

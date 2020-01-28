@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using System.Windows.Forms;
 
 namespace StreamtaggerSync
 {
@@ -33,11 +34,57 @@ namespace StreamtaggerSync
             }
         }
 
+        public class PlaylistToDelete
+        {
+            public readonly FileInfo Path;
+            public bool Delete;
+
+            public PlaylistToDelete(FileInfo path)
+            {
+                Path = path;
+                Delete = false;
+            }
+        }
+
+        public class RequestDeleteOldPlaylistsEventArgs : EventArgs
+        {
+            public readonly PlaylistToDelete[] Playlists;
+
+            public RequestDeleteOldPlaylistsEventArgs(IEnumerable<FileInfo> playlists)
+            {
+                Playlists = playlists.Select(fi => new PlaylistToDelete(fi)).ToArray();
+            }
+        }
+
+        public class SongToDelete
+        {
+            public readonly FileInfo Path;
+            public bool Delete;
+
+            public SongToDelete(FileInfo path)
+            {
+                Path = path;
+                Delete = false;
+            }
+        }
+
+        public class RequestDeleteUnreferencedSongsEventArgs : EventArgs
+        {
+            public readonly SongToDelete[] Songs;
+
+            public RequestDeleteUnreferencedSongsEventArgs(IEnumerable<FileInfo> songs)
+            {
+                Songs = songs.Select(s => new SongToDelete(s)).ToArray();
+            }
+        }
+
         private PlaylistSet _Playlists;
         private Preferences _Preferences;
         private string _Password;
 
         public event EventHandler<LogMessageEventArgs> LogMessage;
+        public event EventHandler<RequestDeleteOldPlaylistsEventArgs> RequestDeleteOldPlaylists;
+        public event EventHandler<RequestDeleteUnreferencedSongsEventArgs> RequestDeleteUnreferencedSongs;
 
         public Synchronizer(PlaylistSet playlists, Preferences preferences, string password)
         {
@@ -79,7 +126,7 @@ namespace StreamtaggerSync
                     var playlistPathLists = new Dictionary<string, List<string>>();
                     var syncSongs = new Dictionary<string, SyncSong>();
                     Uri songListUri = new Uri(_Preferences.StreamtaggerUrl, "song_list");
-                    foreach (Playlist playlistDef in _Playlists.Playlists)
+                    foreach (Playlist playlistDef in _Playlists.Playlists.Where(p => p.Enabled))
                     {
                         Uri playlistUri = AddQuery(songListUri, playlistDef.Query);
                         Log("Reading song list " + (playlistDef.Name == "" ? "" : ("for " + playlistDef.Name)) + " at " + playlistUri.AbsoluteUri);
@@ -111,7 +158,7 @@ namespace StreamtaggerSync
                                     syncSongs[song.path] = new SyncSong(song.path, _Preferences.StreamtaggerUrl, _Preferences.MusicPath);
                                 }
                             }
-                            Log("Added " + (syncSongs.Count - prevSongPathCount) + " to sync list");
+                            Log("Added " + (syncSongs.Count - prevSongPathCount) + " new songs to sync list");
                         }
                     }
 
@@ -165,6 +212,51 @@ namespace StreamtaggerSync
                         }
                     }
 
+                    // Remove old playlists
+                    var newPlaylists = new HashSet<string>(playlistPathLists.Select(kvp => kvp.Key.ToLower()));
+                    var oldPlaylists = new List<FileInfo>();
+                    foreach (FileInfo fi in _Preferences.PlaylistsPath.GetFiles("*.m3u"))
+                    {
+                        string playlistName = fi.Name.Substring(0, fi.Name.Length - ".m3u".Length).ToLower();
+                        if (!newPlaylists.Contains(playlistName))
+                        {
+                            oldPlaylists.Add(fi);
+                        }
+                    }
+                    if (oldPlaylists.Any())
+                    {
+                        var eOldPlaylists = new RequestDeleteOldPlaylistsEventArgs(oldPlaylists);
+                        RequestDeleteOldPlaylists?.Invoke(this, eOldPlaylists);
+                        var playlistsToDelete = eOldPlaylists.Playlists.Where(p => p.Delete);
+                        foreach (PlaylistToDelete playlist in playlistsToDelete)
+                        {
+                            playlist.Path.Delete();
+                        }
+                        Log("Deleted " + playlistsToDelete.Count() + " playlists:\r\n" + playlistsToDelete.Select(p => p.Path.FullName).Aggregate((a, b) => a + "\r\n" + b));
+                    }
+
+                    // Remove unreferenced songs
+                    var newSongs = new HashSet<string>(syncSongs.Select(s => s.Value.LocalFile.FullName.ToLower()));
+                    var oldSongs = new List<FileInfo>();
+                    foreach (FileInfo fi in FindSongs(_Preferences.MusicPath))
+                    {
+                        if (!newSongs.Contains(fi.FullName.ToLower()))
+                        {
+                            oldSongs.Add(fi);
+                        }
+                    }
+                    if (oldSongs.Any())
+                    {
+                        var eOldSongs = new RequestDeleteUnreferencedSongsEventArgs(oldSongs);
+                        RequestDeleteUnreferencedSongs?.Invoke(this, eOldSongs);
+                        var songsToDelete = eOldSongs.Songs.Where(s => s.Delete);
+                        foreach (SongToDelete song in songsToDelete)
+                        {
+                            song.Path.Delete();
+                        }
+                        Log("Deleted " + songsToDelete.Count() + " songs:\r\n" + songsToDelete.Select(s => s.Path.FullName).Aggregate((a, b) => a + "\r\n" + b));
+                    }
+
                     Log("Synchronization successful; downloaded " + nDownloaded + " songs and updated " + nPlaylists + " playlists.");
                 }
             }
@@ -202,10 +294,20 @@ namespace StreamtaggerSync
             return uriBuilder.Uri;
         }
 
+        private static List<FileInfo> FindSongs(DirectoryInfo path)
+        {
+            var result = new List<FileInfo>(path.GetFiles("*.mp3"));
+            foreach (DirectoryInfo di in path.GetDirectories())
+            {
+                result.AddRange(FindSongs(di));
+            }
+            return result;
+        }
+
         private class SyncSong
         {
-            public Uri RemotePath;
-            public FileInfo LocalFile;
+            public readonly Uri RemotePath;
+            public readonly FileInfo LocalFile;
 
             public SyncSong(string relativeSongPath, Uri baseUri, DirectoryInfo mediaPath)
             {

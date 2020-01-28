@@ -12,11 +12,13 @@ namespace StreamtaggerSync
     {
         public string Name;
         public string Query;
+        public bool Enabled;
 
-        public Playlist(string name, string query)
+        public Playlist(string name, string query, bool enabled)
         {
             Name = name;
             Query = query;
+            Enabled = enabled;
         }
     }
 
