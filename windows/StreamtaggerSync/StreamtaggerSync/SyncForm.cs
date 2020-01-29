@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -90,7 +91,7 @@ namespace StreamtaggerSync
 
         private async Task Synchronize(CancellationToken token)
         {
-            if (_Preferences.Username == "")
+            if (_Preferences.Username == "" || _Preferences.Username == null)
             {
                 if (UpdatePreferences("Please specify a valid username") != DialogResult.OK)
                 {
@@ -178,6 +179,12 @@ namespace StreamtaggerSync
         private void playlistListBox1_InformationRequested(object sender, PlaylistControl.InformationRequestedEventArgs e)
         {
             e.StreamtaggerUri = _Preferences.StreamtaggerUrl;
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var assemblyName = Assembly.GetExecutingAssembly().GetName();
+            MessageBox.Show(this, assemblyName.Name + " " + assemblyName.Version.ToString(), "Version", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

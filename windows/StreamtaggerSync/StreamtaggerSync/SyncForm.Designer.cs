@@ -36,11 +36,13 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.gbPlaylists = new System.Windows.Forms.GroupBox();
-            this.gbSync = new System.Windows.Forms.GroupBox();
-            this.txtSyncLog = new System.Windows.Forms.TextBox();
-            this.cmdSync = new System.Windows.Forms.Button();
-            this.cmdCopyLog = new System.Windows.Forms.Button();
             this.playlistListBox1 = new StreamtaggerSync.PlaylistListBox();
+            this.gbSync = new System.Windows.Forms.GroupBox();
+            this.cmdCopyLog = new System.Windows.Forms.Button();
+            this.cmdSync = new System.Windows.Forms.Button();
+            this.txtSyncLog = new System.Windows.Forms.TextBox();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -53,7 +55,8 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.fileToolStripMenuItem,
+            this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1046, 24);
@@ -73,19 +76,19 @@
             // preferencesToolStripMenuItem
             // 
             this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
-            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
-            this.preferencesToolStripMenuItem.Text = "&Preferences";
+            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.preferencesToolStripMenuItem.Text = "&Preferences...";
             this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.preferencesToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(132, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -105,7 +108,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.gbSync);
             this.splitContainer1.Size = new System.Drawing.Size(1022, 532);
-            this.splitContainer1.SplitterDistance = 487;
+            this.splitContainer1.SplitterDistance = 486;
             this.splitContainer1.TabIndex = 2;
             // 
             // gbPlaylists
@@ -116,10 +119,24 @@
             this.gbPlaylists.Controls.Add(this.playlistListBox1);
             this.gbPlaylists.Location = new System.Drawing.Point(3, 3);
             this.gbPlaylists.Name = "gbPlaylists";
-            this.gbPlaylists.Size = new System.Drawing.Size(481, 526);
+            this.gbPlaylists.Size = new System.Drawing.Size(480, 526);
             this.gbPlaylists.TabIndex = 2;
             this.gbPlaylists.TabStop = false;
             this.gbPlaylists.Text = "Playlists";
+            // 
+            // playlistListBox1
+            // 
+            this.playlistListBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.playlistListBox1.AutoScroll = true;
+            this.playlistListBox1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.playlistListBox1.Location = new System.Drawing.Point(6, 19);
+            this.playlistListBox1.Name = "playlistListBox1";
+            this.playlistListBox1.Size = new System.Drawing.Size(468, 501);
+            this.playlistListBox1.TabIndex = 0;
+            this.playlistListBox1.PlaylistsChanged += new System.EventHandler(this.playlistListBox1_PlaylistsChanged);
+            this.playlistListBox1.InformationRequested += new System.EventHandler<StreamtaggerSync.PlaylistControl.InformationRequestedEventArgs>(this.playlistListBox1_InformationRequested);
             // 
             // gbSync
             // 
@@ -131,34 +148,10 @@
             this.gbSync.Controls.Add(this.txtSyncLog);
             this.gbSync.Location = new System.Drawing.Point(3, 3);
             this.gbSync.Name = "gbSync";
-            this.gbSync.Size = new System.Drawing.Size(525, 526);
+            this.gbSync.Size = new System.Drawing.Size(526, 526);
             this.gbSync.TabIndex = 0;
             this.gbSync.TabStop = false;
             this.gbSync.Text = "Sync";
-            // 
-            // txtSyncLog
-            // 
-            this.txtSyncLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSyncLog.Location = new System.Drawing.Point(6, 19);
-            this.txtSyncLog.Multiline = true;
-            this.txtSyncLog.Name = "txtSyncLog";
-            this.txtSyncLog.ReadOnly = true;
-            this.txtSyncLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtSyncLog.Size = new System.Drawing.Size(513, 472);
-            this.txtSyncLog.TabIndex = 0;
-            // 
-            // cmdSync
-            // 
-            this.cmdSync.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdSync.Location = new System.Drawing.Point(413, 497);
-            this.cmdSync.Name = "cmdSync";
-            this.cmdSync.Size = new System.Drawing.Size(106, 23);
-            this.cmdSync.TabIndex = 1;
-            this.cmdSync.Text = "Sync!";
-            this.cmdSync.UseVisualStyleBackColor = true;
-            this.cmdSync.Click += new System.EventHandler(this.cmdSync_Click);
             // 
             // cmdCopyLog
             // 
@@ -170,19 +163,44 @@
             this.cmdCopyLog.Text = "Copy log";
             this.cmdCopyLog.UseVisualStyleBackColor = true;
             // 
-            // playlistListBox1
+            // cmdSync
             // 
-            this.playlistListBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.cmdSync.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdSync.Location = new System.Drawing.Point(414, 497);
+            this.cmdSync.Name = "cmdSync";
+            this.cmdSync.Size = new System.Drawing.Size(106, 23);
+            this.cmdSync.TabIndex = 1;
+            this.cmdSync.Text = "Sync!";
+            this.cmdSync.UseVisualStyleBackColor = true;
+            this.cmdSync.Click += new System.EventHandler(this.cmdSync_Click);
+            // 
+            // txtSyncLog
+            // 
+            this.txtSyncLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.playlistListBox1.AutoScroll = true;
-            this.playlistListBox1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.playlistListBox1.Location = new System.Drawing.Point(6, 19);
-            this.playlistListBox1.Name = "playlistListBox1";
-            this.playlistListBox1.Size = new System.Drawing.Size(469, 501);
-            this.playlistListBox1.TabIndex = 0;
-            this.playlistListBox1.PlaylistsChanged += new System.EventHandler(this.playlistListBox1_PlaylistsChanged);
-            this.playlistListBox1.InformationRequested += new System.EventHandler<StreamtaggerSync.PlaylistControl.InformationRequestedEventArgs>(this.playlistListBox1_InformationRequested);
+            this.txtSyncLog.Location = new System.Drawing.Point(6, 19);
+            this.txtSyncLog.Multiline = true;
+            this.txtSyncLog.Name = "txtSyncLog";
+            this.txtSyncLog.ReadOnly = true;
+            this.txtSyncLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtSyncLog.Size = new System.Drawing.Size(514, 472);
+            this.txtSyncLog.TabIndex = 0;
+            // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aboutToolStripMenuItem});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Text = "&Help";
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutToolStripMenuItem.Text = "&About...";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // SyncForm
             // 
@@ -223,6 +241,8 @@
         private System.Windows.Forms.Button cmdSync;
         private System.Windows.Forms.TextBox txtSyncLog;
         private System.Windows.Forms.Button cmdCopyLog;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
     }
 }
 

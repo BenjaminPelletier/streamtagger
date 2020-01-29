@@ -228,11 +228,14 @@ namespace StreamtaggerSync
                         var eOldPlaylists = new RequestDeleteOldPlaylistsEventArgs(oldPlaylists);
                         RequestDeleteOldPlaylists?.Invoke(this, eOldPlaylists);
                         var playlistsToDelete = eOldPlaylists.Playlists.Where(p => p.Delete);
-                        foreach (PlaylistToDelete playlist in playlistsToDelete)
+                        if (playlistsToDelete.Any())
                         {
-                            playlist.Path.Delete();
+                            foreach (PlaylistToDelete playlist in playlistsToDelete)
+                            {
+                                playlist.Path.Delete();
+                            }
+                            Log("Deleted " + playlistsToDelete.Count() + " playlists:\r\n" + playlistsToDelete.Select(p => p.Path.FullName).Aggregate((a, b) => a + "\r\n" + b));
                         }
-                        Log("Deleted " + playlistsToDelete.Count() + " playlists:\r\n" + playlistsToDelete.Select(p => p.Path.FullName).Aggregate((a, b) => a + "\r\n" + b));
                     }
 
                     // Remove unreferenced songs
@@ -250,11 +253,14 @@ namespace StreamtaggerSync
                         var eOldSongs = new RequestDeleteUnreferencedSongsEventArgs(oldSongs);
                         RequestDeleteUnreferencedSongs?.Invoke(this, eOldSongs);
                         var songsToDelete = eOldSongs.Songs.Where(s => s.Delete);
-                        foreach (SongToDelete song in songsToDelete)
+                        if (songsToDelete.Any())
                         {
-                            song.Path.Delete();
+                            foreach (SongToDelete song in songsToDelete)
+                            {
+                                song.Path.Delete();
+                            }
+                            Log("Deleted " + songsToDelete.Count() + " songs:\r\n" + songsToDelete.Select(s => s.Path.FullName).Aggregate((a, b) => a + "\r\n" + b));
                         }
-                        Log("Deleted " + songsToDelete.Count() + " songs:\r\n" + songsToDelete.Select(s => s.Path.FullName).Aggregate((a, b) => a + "\r\n" + b));
                     }
 
                     Log("Synchronization successful; downloaded " + nDownloaded + " songs and updated " + nPlaylists + " playlists.");

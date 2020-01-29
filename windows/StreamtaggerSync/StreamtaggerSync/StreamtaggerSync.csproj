@@ -70,6 +70,9 @@
   <PropertyGroup>
     <SignManifests>true</SignManifests>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="JsonSerialization, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\JsonSerialization.1.0.4\lib\netstandard2.0\JsonSerialization.dll</HintPath>
@@ -183,6 +186,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\save.png" />
+    <Content Include="favicon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\ILMerge.MSBuild.Task.1.0.7\build\ILMerge.MSBuild.Task.targets" Condition="Exists('..\packages\ILMerge.MSBuild.Task.1.0.7\build\ILMerge.MSBuild.Task.targets')" />
