@@ -9,6 +9,9 @@ $(document).ready(function() {
         play_next_song(1);
     });
 
+    $('#audio').on('error', handle_media_error);
+    $('#audio_source').on('error', handle_source_error);
+
     $('#file_input').change(function(event) {
         for (var i = 0; i < fileInput.files.length; i++) {
     	    fileList.push(fileInput.files[i]);
@@ -197,4 +200,28 @@ function click_set_tag(event) {
         // Failed to update tag value
         alert('Error updating tag value: ' + error + '\n' + jqXHR.responseText);
     });
+}
+
+// An error occurred while trying to load the source of the audio player
+function handle_source_error(e) {
+    if (e.target.src.endsWith('.mp3')) {
+        alert('Error loading ' + e.target.src);
+        window.location.href = '/login';
+    }
+}
+
+// An error occurred while trying to play media on the audio player
+function handle_media_error(e) {
+    switch (e.target.error.code) {
+        case e.target.error.MEDIA_ERR_ABORTED:
+            alert('You aborted the media playback.'); break;
+        case e.target.error.MEDIA_ERR_NETWORK:
+            alert('A network error caused the media download to fail.'); break;
+        case e.target.error.MEDIA_ERR_DECODE:
+            alert('The media playback was aborted due to a corruption problem or because the media used features your browser did not support.'); break;
+        case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+            alert('The media could not be loaded, either because the server or network failed or because the format is not supported.'); break;
+        default:
+            alert('An unknown media error occurred.');
+    }
 }
