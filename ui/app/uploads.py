@@ -10,6 +10,7 @@ from .lib import song
 from . import sessions
 
 import flask
+import flask_login
 
 
 def is_unsafe_filename(filename):
@@ -21,22 +22,16 @@ def upload_error(message):
 
 
 @app.route('/upload', methods=['GET'])
+@flask_login.login_required
 def get_upload():
-  with db.transaction() as transaction:
-    user_id, session_id = sessions.get_session(transaction)
-    if user_id is None:
-      return flask.jsonify({'message': 'You must be logged in to upload files'}), 401
-  users = transaction.get_users()
-  username = users[user_id]
-  return flask.render_template('upload.html', username=username)
+  return flask.render_template('upload.html')
 
 
 @app.route('/upload', methods=['POST'])
+@flask_login.login_required
 def post_upload():
   with db.transaction() as transaction:
     user_id, session_id = sessions.get_session(transaction)
-    if user_id is None:
-      return flask.jsonify({'message': 'You must be logged in to upload files'}), 401
 
   if 'file' not in flask.request.files:
     return upload_error('No file specified in upload request')
@@ -108,6 +103,7 @@ def post_upload():
 
 
 @app.route('/songs/<song_id>', methods=['DELETE'])
+@flask_login.login_required
 def delete_song(song_id):
   try:
     song_id = uuid.UUID(song_id)
@@ -116,9 +112,6 @@ def delete_song(song_id):
                           'message': 'Did not recognize song_id as valid ID: ' + str(e)})
 
   with db.transaction() as transaction:
-    user_id, session_id = sessions.get_session(transaction)
-    if user_id is None:
-      return flask.jsonify({'message': 'You must be logged in to delete files'}), 401
     song_summaries = transaction.get_songs_by_ids([song_id])
     if len(song_summaries) == 0:
       return flask.jsonify({'status': 'error',

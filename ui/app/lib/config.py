@@ -6,3 +6,8 @@ class Config(object):
 
   SQLALCHEMY_DATABASE_URI = os.environ.get('ST_DB_CONNECTIONSTRING')
   SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+  SECRET_KEY = os.environ.get('ST_SECRET_KEY', '').encode('utf-8')
+
+if not Config.SECRET_KEY:
+  raise ValueError('The FLASK_SECRET_KEY environment variable must be set')

@@ -8,11 +8,13 @@ from .lib import song
 from . import sessions
 
 import flask
+import flask_login
 import mutagen.easyid3
 import mutagen.id3
 
 
 @app.route('/song_details/<song_id>', methods=['GET'])
+@flask_login.login_required
 def get_song_details(song_id):
   try:
     song_id = uuid.UUID(song_id)
@@ -22,8 +24,6 @@ def get_song_details(song_id):
 
   with db.transaction() as transaction:
     user_id, session_id = sessions.get_session(transaction)
-    if user_id is None:
-      return flask.redirect('/login')
     users = transaction.get_users()
     username = users[user_id]
     song_summaries = transaction.get_songs_by_ids([song_id])
@@ -63,11 +63,10 @@ def get_song_details(song_id):
   )
 
 @app.route('/song_details/<song_id>', methods=['POST'])
+@flask_login.login_required
 def post_song_details(song_id):
   with db.transaction() as transaction:
     user_id, session_id = sessions.get_session(transaction)
-    if user_id is None:
-      return flask.redirect('/login')
     users = transaction.get_users()
     username = users[user_id]
     song_summaries = transaction.get_songs_by_ids([song_id])

@@ -1,18 +1,36 @@
+from app import login
 from app import dbx
 from .lib.db_uuid import UUID
 
 from sqlalchemy.orm import relationship
+import werkzeug.security
+import flask_login
 
 
-class User(dbx.Model):
+class User(flask_login.UserMixin, dbx.Model):
     __tablename__ = 'users'
 
     id = dbx.Column(UUID, primary_key=True, server_default=dbx.text("gen_random_uuid()"))
     username = dbx.Column(dbx.String, unique=True)
     password_hash = dbx.Column(dbx.String, nullable=False)
 
+    def set_password(self, password):
+        # TODO: use line directly below after Flask-Login functionality has been verified passwords have been updated in the database
+        # self.password_hash = werkzeug.security.generate_password_hash(password)
+        self.password_hash = password
+
+    def check_password(self, password):
+        # TODO: use line directly below after Flask-Login functionality has been verified passwords have been updated in the database
+        # return werkzeug.security.check_password_hash(self.password_hash, password)
+        return self.password_hash == password
+
     def __repr__(self):
       return '<User {}>'.format(self.username)
+
+
+@login.user_loader
+def load_user(id):
+    return User.query.get(id)
 
 
 class Session(dbx.Model):

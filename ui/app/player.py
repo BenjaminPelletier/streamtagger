@@ -7,19 +7,20 @@ from .lib import query
 from . import sessions
 
 import flask
+import flask_login
 
 
 Report = collections.namedtuple('Report', ('name', 'tag_name', 'username', 'tag_type'))
 
 
-def make_tag_cell(report, value, username):
-  editable = report.username is None or report.username == username
+def make_tag_cell(report, value):
+  editable = report.username is None or report.username == flask_login.current_user.username
   return flask.render_template(
     'tag_cell.html',
     tag_type=report.tag_type, tag_name=report.tag_name, tag_value=value, editable=editable, report_name=report.name)
 
 
-def make_table(songs, username, tagsets=None, reports=None):
+def make_table(songs, tagsets=None, reports=None):
   if not tagsets:
     tagsets = {}
   if not reports:
@@ -37,18 +38,18 @@ def make_table(songs, username, tagsets=None, reports=None):
     tagset = tagsets.get(song.song_id)
     for report in reports:
       value = tagset.compute_report_value(report) if tagset else None
-      cols.append(make_tag_cell(report, value, username))
+      cols.append(make_tag_cell(report, value))
     song_rows.append(cols)
   return flask.render_template(
     'song_table.html',
     header=header, song_rows=song_rows, song_ids=song_ids, song_paths=song_paths)
 
 
-def render_player(songs, users, username, tagsets=None, reports=None):
-  table_html = make_table(songs, username, tagsets, reports)
-  return flask.render_template(
-    'player.html',
-    initial_song_table=table_html, username=username)
+def render_player(songs, transaction, show=None):
+  tagsets, tag_names = transaction.get_tags([song.song_id for song in songs])
+  reports = parse_reports(show, transaction)
+  table_html = make_table(songs, tagsets, reports)
+  return flask.render_template('player.html', initial_song_table=table_html)
 
 
 def parse_reports(report_str, transaction):
@@ -66,18 +67,14 @@ def parse_reports(report_str, transaction):
 
 
 @app.route('/', methods=['GET'])
+@app.route('/songs', methods=['GET'])
+@flask_login.login_required
 def index():
   with db.transaction() as transaction:
-    user_id, session_id = sessions.get_session(transaction)
-    if user_id is None:
-      return flask.redirect(flask.url_for('login', **flask.request.args))
     users = transaction.get_users()
-    username = users[user_id]
 
     userids_by_name = {v: k for k, v in users.items()}
     where_clauses = query.get_where_clauses(flask.request.args, transaction, userids_by_name)
 
     songs = transaction.query_songs(where_clauses)
-    tagsets, tag_names = transaction.get_tags([song.song_id for song in songs])
-    reports = parse_reports(flask.request.args.get('show'), transaction)
-  return render_player(songs, users, username, tagsets, reports)
+    return render_player(songs=songs, transaction=transaction, show=flask.request.args.get('show'))

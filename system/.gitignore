@@ -1,2 +1,3 @@
 storage/
 Dockerfile
+secret_key

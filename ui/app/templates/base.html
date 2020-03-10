@@ -29,7 +29,7 @@
             </div>
         </div>
         <div class="dropdown" id="user_context">
-            <button onclick="show_user_dropdown('user_dropdown')" class="dropbtn">{{ username }}</button>
+            <button onclick="show_user_dropdown('user_dropdown')" class="dropbtn">{{ current_user.username }}</button>
             <div id="user_dropdown" class="dropdown-content">
                 <a href="#" onclick="logout()">Logout</a>
             </div>

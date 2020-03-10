@@ -9,21 +9,19 @@ from . import player
 from . import sessions
 
 import flask
+import flask_login
 
 
 @app.route('/tags', methods=['GET'])
+@flask_login.login_required
 def get_tags():
   with db.transaction() as transaction:
-    user_id, session_id = sessions.get_session(transaction)
-    if user_id is None:
-      return flask.redirect('/login')
-    users = transaction.get_users()
-    username = users[user_id]
     tag_defs = transaction.get_tag_definitions()
-  return flask.render_template('tags.html', tag_defs=tag_defs, username=username)
+    return flask.render_template('tags.html', tag_defs=tag_defs)
 
 
 @app.route('/tags', methods=['POST'])
+@flask_login.login_required
 def post_tags():
   try:
     new_tag_name = flask.request.form['new_tag_name']
@@ -45,10 +43,6 @@ def post_tags():
 
   with db.transaction() as transaction:
     user_id, session_id = sessions.get_session(transaction)
-    if user_id is None:
-      return flask.redirect('/login')
-    users = transaction.get_users()
-    username = users[user_id]
     tag_defs = transaction.get_tag_definitions()
     if new_tag_name in tag_defs:
       return flask.jsonify({'status': 'error',
@@ -60,6 +54,7 @@ def post_tags():
 
 
 @app.route('/songs/<song_id>/tags/<tag_name>', methods=['POST'])
+@flask_login.login_required
 def post_tag(song_id, tag_name):
   song_id = uuid.UUID(song_id)
   try:
@@ -79,8 +74,6 @@ def post_tag(song_id, tag_name):
 
   with db.transaction() as transaction:
     user_id, session_id = sessions.get_session(transaction)
-    if user_id is None:
-      return flask.redirect('/login')
     users = transaction.get_users()
     username = users[user_id]
 
@@ -110,10 +103,3 @@ def post_tag(song_id, tag_name):
                             'tag_cell_html': tag_cell_html}), 200
 
   return flask.jsonify({'status': 'success', 'data_changed': False}), 200
-
-# Tag colors
-# 1b1b5b
-# 5d29b0
-# d63a49
-# e58603
-# e5d14b

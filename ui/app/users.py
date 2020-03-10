@@ -3,14 +3,14 @@ from .lib import db
 from . import sessions
 
 import flask
+import flask_login
 
 
 @app.route('/users/<username>', methods=['POST'])
+@flask_login.login_required
 def post_user(username):
   with db.transaction() as transaction:
     user_id, session_id = sessions.get_session(transaction)
-    if user_id is None:
-      return flask.redirect('/login')
     users = transaction.get_users()
     logged_in_username = users[user_id]
     if logged_in_username != 'admin':
@@ -28,13 +28,8 @@ def post_user(username):
 
 
 @app.route('/users/<username>', methods=['GET'])
+@flask_login.login_required
 def get_user(username):
-  with db.transaction() as transaction:
-    user_id, session_id = sessions.get_session(transaction)
-    if user_id is None:
-      return flask.redirect('/login')
-    users = transaction.get_users()
-    logged_in_username = users[user_id]
-  if username != logged_in_username:
-    return flask.redirect('/users/' + logged_in_username)
-  return flask.render_template('user.html', username=username)
+  if username != flask_login.current_user.username:
+    return flask.redirect('/users/' + flask_login.current_user.username)
+  return flask.render_template('user.html')

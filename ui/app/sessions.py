@@ -4,7 +4,12 @@ import uuid
 import flask
 
 from app import app
+from app.models import User
 from .lib import db
+
+
+import flask_login
+from werkzeug.urls import url_parse
 
 
 SESSION_KEY = 'streamtagger_session'
@@ -26,11 +31,8 @@ def get_session(transaction):
 
 
 def login_get():
-  with db.transaction() as transaction:
-    user_id, session_id = get_session(transaction)
-    if user_id:
-      # User already logged in with valid session
-      return flask.redirect(flask.url_for('index', **flask.request.args))
+  if flask_login.current_user.is_authenticated:
+    return flask.redirect(flask.url_for('index', **flask.request.args))
 
   return flask.render_template('login.html')
 
@@ -38,27 +40,28 @@ def login_get():
 def login_post():
   username = flask.request.form['username']
   password_hash = flask.request.form['password_hash']
-  with db.transaction() as transaction:
-    user_id, db_password_hash = transaction.get_user(username)
-    if not user_id:
+  if not flask_login.current_user.is_authenticated:
+    user = User.query.filter(User.username==username).first()
+    if user is None or not user.check_password(password_hash):
       return flask.jsonify({
         'success': False,
-        'message': 'Unknown user ' + username
+        'message': 'Invalid username or password'
       })
+    flask_login.login_user(user, remember=True)
+    with db.transaction() as transaction:
+      ip = flask.request.environ.get('HTTP_X_REAL_IP',
+                                     flask.request.environ['REMOTE_ADDR'])
+      session_id = transaction.add_session(user.id, ip)
+      transaction.commit()
 
-    if db_password_hash != password_hash:
-      return flask.jsonify({
-        'success': False,
-        'message': 'Supplied password does not match database'
-      })
-
-    ip = flask.request.environ.get('HTTP_X_REAL_IP', flask.request.environ['REMOTE_ADDR'])
-    session_id = transaction.add_session(user_id, ip)
-    transaction.commit()
+  next_page = flask.request.args.get('next')
+  args_minus_next = {k: v for (k, v) in flask.request.args.items()}
+  if not next_page or url_parse(next_page).netloc != '':
+    next_page = flask.url_for('index', **args_minus_next)
 
   resp = flask.make_response(flask.jsonify({
     'success': True,
-    'redirect': flask.url_for('index', **flask.request.args)
+    'redirect': next_page
   }))
   resp.set_cookie(SESSION_KEY, session_id)
   return resp
@@ -70,3 +73,9 @@ def login():
     return login_get()
   if flask.request.method == 'POST':
     return login_post()
+
+
+@app.route('/logout')
+def logout():
+  flask_login.logout_user()
+  return flask.redirect(flask.url_for('login'))

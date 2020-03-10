@@ -18,6 +18,13 @@ if [[ $(docker container ls) == *"streamtagger_ui"* ]]; then
   docker container rm streamtagger_ui
 fi
 
+if test -f "secret_key"; then
+  echo "!!!=================================================="
+  echo "secret_key does not exist; creating new secret_key..."
+  echo "!!!=================================================="
+  ./make_secret_key.sh
+fi
+
 docker run \
   --log-driver json-file \
   --log-opt max-size=10m \
@@ -28,4 +35,5 @@ docker run \
   -v "${PWD}/storage/media:/var/media" \
   -e ST_DB_CONNECTIONSTRING="postgresql://streamtagger:mysecretpassword@streamtagger_db/streamtagger" \
   -e PYTHONUNBUFFERED=TRUE \
+  -e ST_SECRET_KEY=`cat secret_key` \
   -p 5000:5000 -d ${image_name}

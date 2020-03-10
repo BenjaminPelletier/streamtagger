@@ -11,6 +11,7 @@ from .lib import song
 from . import sessions
 
 import flask
+import flask_login
 
 ADMIN_USERS = {'admin', 'ben'}
 sync_job_lock = threading.Lock()
@@ -18,57 +19,54 @@ sync_jobs = {}
 
 
 @app.route('/sync', methods=['GET'])
+@flask_login.login_required
 def get_sync():
   with db.transaction() as transaction:
     user_id, session_id = sessions.get_session(transaction)
-    if user_id is None:
-      return flask.redirect('/login')
     users = transaction.get_users()
     username = users[user_id]
     if username not in ADMIN_USERS:
       return flask.jsonify({'status': 'error',
                             'message': 'User %s not authorized to perform this action' % username}), 403
 
-  with sync_job_lock:
-    for job_id, job in sync_jobs.items():
-      if job.is_active():
-        return flask.redirect('/sync/' + next(sync_jobs.keys()))
+    with sync_job_lock:
+      for job_id, job in sync_jobs.items():
+        if job.is_active():
+          return flask.redirect('/sync/' + next(sync_jobs.keys()))
 
-  return flask.render_template(
-    'sync.html', logs=None, job_id=datetime.datetime.utcnow().strftime('%Y%m%d_%H%M%S'))
+    return flask.render_template(
+      'sync.html', logs=None, job_id=datetime.datetime.utcnow().strftime('%Y%m%d_%H%M%S'))
 
 
 @app.route('/sync/<job_id>', methods=['GET'])
+@flask_login.login_required
 def get_sync_progress(job_id):
   with db.transaction() as transaction:
     user_id, session_id = sessions.get_session(transaction)
-    if user_id is None:
-      return flask.redirect('/login')
     users = transaction.get_users()
     username = users[user_id]
     if username not in ADMIN_USERS:
       return flask.jsonify({'status': 'error',
                             'message': 'User %s not authorized to perform this action' % username}), 403
 
-  with sync_job_lock:
-    if job_id not in sync_jobs:
-      return flask.jsonify({'status': 'error',
-                            'message': 'Job ID %s not found' % job_id}), 404
-    return flask.render_template(
-      'job_progress.html', logs=sync_jobs[job_id].get_logs())
+    with sync_job_lock:
+      if job_id not in sync_jobs:
+        return flask.jsonify({'status': 'error',
+                              'message': 'Job ID %s not found' % job_id}), 404
+      return flask.render_template(
+        'job_progress.html', logs=sync_jobs[job_id].get_logs())
 
 
 @app.route('/sync/<job_id>', methods=['POST'])
+@flask_login.login_required
 def post_sync_start(job_id):
   with db.transaction() as transaction:
     user_id, session_id = sessions.get_session(transaction)
-    if user_id is None:
-      return flask.redirect('/login')
     users = transaction.get_users()
     username = users[user_id]
-  if username not in ADMIN_USERS:
-    return flask.jsonify({'status': 'error',
-                          'message': 'User %s not authorized to perform this action' % username}), 403
+    if username not in ADMIN_USERS:
+      return flask.jsonify({'status': 'error',
+                            'message': 'User %s not authorized to perform this action' % username}), 403
   with sync_job_lock:
     sync_job = jobs.Job()
     sync_jobs[job_id] = sync_job

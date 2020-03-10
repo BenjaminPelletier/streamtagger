@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_login import LoginManager
 import jinja2
 
 from .lib.config import Config
@@ -13,5 +14,8 @@ app.jinja_env.globals.update(len=len)
 
 dbx = SQLAlchemy(app)
 migrate = Migrate(app, dbx)
+
+login = LoginManager(app)
+login.login_view = 'login'
 
 from app import routes, models

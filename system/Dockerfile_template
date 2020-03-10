@@ -5,7 +5,7 @@ WORKDIR /usr/src/app
 RUN apt-get update && \
     apt-get -y install ffmpeg
 
-RUN pip install flask gunicorn jinja2 psycopg2 mutagen flask-sqlalchemy flask-migrate
+RUN pip install flask gunicorn jinja2 psycopg2 mutagen flask-sqlalchemy flask-migrate flask-login
 
 COPY . .
 
