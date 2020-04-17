@@ -92,7 +92,7 @@ def post_tag(song_id, tag_name):
         changes = True
     if changes:
       report = player.parse_reports(report_name, transaction)[0]
-      tag_cell_html = player.make_tag_cell(report, tag_value, username)
+      tag_cell_html = player.make_tag_cell(report, tag_value)
       #summary = transaction.get_song_by_id(song_id)
       #song_details = song.SongDetails(os.path.join(config.media_path, summary.path))
       #song_details.tags = tagset

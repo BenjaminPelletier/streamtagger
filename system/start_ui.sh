@@ -18,10 +18,10 @@ if [[ $(docker container ls) == *"streamtagger_ui"* ]]; then
   docker container rm streamtagger_ui
 fi
 
-if test -f "secret_key"; then
-  echo "!!!=================================================="
+if [[ ! -f "secret_key" ]]; then
+  echo "====================================================="
   echo "secret_key does not exist; creating new secret_key..."
-  echo "!!!=================================================="
+  echo "====================================================="
   ./make_secret_key.sh
 fi
 
