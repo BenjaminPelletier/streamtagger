@@ -46,7 +46,7 @@ def post_upload():
   approved_extensions = {'.mp3', '.m4a'}
   if extension not in approved_extensions:
     return upload_error('Only %s files may be uploaded (found %s)' % (', '.join(approved_extensions), extension))
-  approved_content_types = {'audio/mp3', 'audio/x-m4a', 'audio/mp4'}
+  approved_content_types = {'audio/mp3', 'audio/x-m4a', 'audio/mp4', 'audio/mpeg'}
   if file.content_type not in approved_content_types:
     return upload_error('Only %s content may be uploaded (found %s)' %
                         (', '.join(approved_content_types), file.content_type))
